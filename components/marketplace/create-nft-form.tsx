@@ -86,7 +86,11 @@ export function CreateNFTForm() {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => document.getElementById("file-upload")?.click()}
+                        onClick={() => {
+                          if (typeof document !== "undefined") {
+                            document.getElementById("file-upload")?.click()
+                          }
+                        }}
                       >
                         Choose File
                       </Button>
