@@ -1,6 +1,8 @@
+"use client"
+
 import dynamic from "next/dynamic"
 
-const BTNTokenClient = dynamic(() => import("@/components/client-pages/btn-token-client"), {
+const BTNTokenContent = dynamic(() => import("./btn-token-content"), {
   ssr: false,
   loading: () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 flex items-center justify-center">
@@ -9,6 +11,6 @@ const BTNTokenClient = dynamic(() => import("@/components/client-pages/btn-token
   ),
 })
 
-export default function BTNTokenPage() {
-  return <BTNTokenClient />
+export default function BTNTokenClient() {
+  return <BTNTokenContent />
 }
