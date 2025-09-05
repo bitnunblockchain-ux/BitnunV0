@@ -16,7 +16,6 @@ const nextConfig = {
   generateEtags: true,
   
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
     turbo: {
       rules: {
@@ -29,24 +28,6 @@ const nextConfig = {
   },
   
   webpack: (config, { dev, isServer, webpack }) => {
-    // Fix for "self is not defined" error in server-side rendering
-    if (isServer) {
-      // Add polyfill at the top of each server-side chunk
-      const originalEntry = config.entry
-      config.entry = async () => {
-        const entries = await originalEntry()
-        
-        // Add polyfill to all server entries
-        Object.keys(entries).forEach((key) => {
-          if (Array.isArray(entries[key])) {
-            entries[key].unshift('./polyfills.js')
-          }
-        })
-        
-        return entries
-      }
-    }
-
     // Production optimizations
     if (!dev) {
       // Simplify chunk splitting to avoid potential issues
