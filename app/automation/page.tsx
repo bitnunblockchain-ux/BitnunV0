@@ -5,6 +5,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 
+interface PaymentData {
+  status: string
+  amount: number
+  id: string
+}
+
+interface RevenueData {
+  netRevenue: number
+  id: string
+}
+
+interface WorkflowData {
+  id: string
+  name: string
+  status: string
+  processed: number
+  success: number
+}
+
 let enhancedBlockchainNode: any = null
 
 const getBlockchainNode = async () => {
@@ -16,7 +35,7 @@ const getBlockchainNode = async () => {
 }
 
 export default function AutomationPage() {
-  const [workflows, setWorkflows] = useState([])
+  const [workflows, setWorkflows] = useState<WorkflowData[]>([])
   const [paymentStats, setPaymentStats] = useState({
     totalProcessed: 0,
     successRate: 0,
@@ -38,11 +57,11 @@ export default function AutomationPage() {
       const node = await getBlockchainNode()
       if (!node) return
 
-      const payments = (await node.getData("payments")) || []
-      const revenue = (await node.getData("revenue")) || []
+      const payments: PaymentData[] = (await node.getData("payments")) || []
+      const revenue: RevenueData[] = (await node.getData("revenue")) || []
 
-      const successfulPayments = payments.filter((p) => p.status === "completed")
-      const totalRevenue = revenue.reduce((sum, r) => sum + r.netRevenue, 0)
+      const successfulPayments = payments.filter((p: PaymentData) => p.status === "completed")
+      const totalRevenue = revenue.reduce((sum: number, r: RevenueData) => sum + r.netRevenue, 0)
 
       setPaymentStats({
         totalProcessed: payments.length,
