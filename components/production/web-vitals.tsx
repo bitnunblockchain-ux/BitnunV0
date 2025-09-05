@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import { getCLS, getFID, getFCP, getLCP, getTTFB } from "web-vitals"
 
 interface WebVitalsMetric {
   name: string
@@ -36,12 +35,24 @@ export function WebVitals() {
       }
     }
 
-    // Measure Core Web Vitals
-    getCLS(sendToAnalytics)
-    getFID(sendToAnalytics)
-    getFCP(sendToAnalytics)
-    getLCP(sendToAnalytics)
-    getTTFB(sendToAnalytics)
+    // Dynamically import web-vitals to avoid SSR issues
+    const loadWebVitals = async () => {
+      if (typeof window !== "undefined") {
+        try {
+          const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import("web-vitals")
+          // Measure Core Web Vitals
+          getCLS(sendToAnalytics)
+          getFID(sendToAnalytics)
+          getFCP(sendToAnalytics)
+          getLCP(sendToAnalytics)
+          getTTFB(sendToAnalytics)
+        } catch (error) {
+          console.warn("Failed to load web-vitals:", error)
+        }
+      }
+    }
+
+    loadWebVitals()
   }, [])
 
   return null

@@ -28,7 +28,23 @@ const nextConfig = {
     },
   },
   
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config, { dev, isServer, webpack }) => {
+    // Fix for "self is not defined" error in server-side rendering
+    if (isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        canvas: false,
+        encoding: false,
+      }
+      
+      // Add polyfill for browser globals like 'self'
+      config.plugins.push(
+        new webpack.DefinePlugin({
+          'self': 'globalThis',
+        })
+      )
+    }
+
     // Production optimizations
     if (!dev) {
       config.optimization.splitChunks = {
