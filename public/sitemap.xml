@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <!-- Main Pages -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>1.00</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  
+  <!-- Core Platform Pages -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/marketplace</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.90</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/wallet</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.90</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/trading</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.90</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/gamification</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.85</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  
+  <!-- DeFi & Trading -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/trading/pools</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.80</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/trading/swap</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.80</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/staking</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.80</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  
+  <!-- Governance & Community -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/governance</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.80</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/community</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.75</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/social</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.75</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  
+  <!-- Advanced Features -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/ai-insights</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.75</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/metaverse</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.75</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/bridge</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.75</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  
+  <!-- Cloud Services -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/cloud</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.70</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/cloud/database</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.65</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/cloud/compute</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.65</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/cloud/storage</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.65</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  
+  <!-- Developer Resources -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/developer</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.70</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/sdk</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.70</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/opensource</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.65</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  
+  <!-- Support & Legal -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/support</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.70</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/help</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.70</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/faq</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.65</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/about</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.60</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/contact</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.60</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/privacy</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.50</priority>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://bitnuneco.vercel.app/terms</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.50</priority>
+    <changefreq>yearly</changefreq>
+  </url>
+  
+  <!-- Roadmap -->
+  <url>
+    <loc>https://bitnuneco.vercel.app/roadmap</loc>
+    <lastmod>2024-12-01T00:00:00+00:00</lastmod>
+    <priority>0.60</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+</urlset>
