@@ -15,8 +15,12 @@ export class WASMBlockchainNode {
 
   constructor() {
     this.nodeId = this.generateNodeId()
-    this.initializeWASMWorker()
-    this.initializeEnhancedFeatures()
+    if (typeof window !== "undefined") {
+      this.initializeWASMWorker()
+      this.initializeEnhancedFeatures()
+    } else {
+      console.log("[v0] Server environment detected, skipping WASM worker initialization")
+    }
   }
 
   private generateNodeId(): string {
@@ -24,6 +28,11 @@ export class WASMBlockchainNode {
   }
 
   private async initializeWASMWorker() {
+    if (typeof window === "undefined" || typeof Worker === "undefined") {
+      console.log("[v0] Worker not available in this environment")
+      return
+    }
+
     try {
       // Initialize WebAssembly worker for blockchain operations
       this.worker = new Worker("/workers/blockchain-worker.js")

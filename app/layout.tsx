@@ -205,7 +205,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (typeof window !== "undefined") {
+              if (typeof window !== "undefined" && typeof document !== "undefined") {
                 // Twitter Widget
                 window.twttr = (function(d, s, id) {
                   var js, fjs = d.getElementsByTagName(s)[0],
@@ -224,12 +224,14 @@ export default function RootLayout({
 
                 // Facebook SDK
                 window.fbAsyncInit = function() {
-                  FB.init({
-                    appId: 'your-facebook-app-id',
-                    cookie: true,
-                    xfbml: true,
-                    version: 'v18.0'
-                  });
+                  if (typeof FB !== "undefined") {
+                    FB.init({
+                      appId: 'your-facebook-app-id',
+                      cookie: true,
+                      xfbml: true,
+                      version: 'v18.0'
+                    });
+                  }
                 };
                 (function(d, s, id) {
                   var js, fjs = d.getElementsByTagName(s)[0];
@@ -245,7 +247,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if (typeof window !== "undefined" && 'serviceWorker' in navigator) {
+              if (typeof window !== "undefined" && typeof navigator !== "undefined" && 'serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
