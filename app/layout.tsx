@@ -205,45 +205,47 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Twitter Widget
-              window.twttr = (function(d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0],
-                  t = window.twttr || {};
-                if (d.getElementById(id)) return t;
-                js = d.createElement(s);
-                js.id = id;
-                js.src = "https://platform.twitter.com/widgets.js";
-                fjs.parentNode.insertBefore(js, fjs);
-                t._e = [];
-                t.ready = function(f) {
-                  t._e.push(f);
-                };
-                return t;
-              }(document, "script", "twitter-wjs"));
+              if (typeof window !== "undefined") {
+                // Twitter Widget
+                window.twttr = (function(d, s, id) {
+                  var js, fjs = d.getElementsByTagName(s)[0],
+                    t = window.twttr || {};
+                  if (d.getElementById(id)) return t;
+                  js = d.createElement(s);
+                  js.id = id;
+                  js.src = "https://platform.twitter.com/widgets.js";
+                  fjs.parentNode.insertBefore(js, fjs);
+                  t._e = [];
+                  t.ready = function(f) {
+                    t._e.push(f);
+                  };
+                  return t;
+                }(document, "script", "twitter-wjs"));
 
-              // Facebook SDK
-              window.fbAsyncInit = function() {
-                FB.init({
-                  appId: 'your-facebook-app-id',
-                  cookie: true,
-                  xfbml: true,
-                  version: 'v18.0'
-                });
-              };
-              (function(d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s); js.id = id;
-                js.src = "https://connect.facebook.net/en_US/sdk.js";
-                fjs.parentNode.insertBefore(js, fjs);
-              }(document, 'script', 'facebook-jssdk'));
+                // Facebook SDK
+                window.fbAsyncInit = function() {
+                  FB.init({
+                    appId: 'your-facebook-app-id',
+                    cookie: true,
+                    xfbml: true,
+                    version: 'v18.0'
+                  });
+                };
+                (function(d, s, id) {
+                  var js, fjs = d.getElementsByTagName(s)[0];
+                  if (d.getElementById(id)) return;
+                  js = d.createElement(s); js.id = id;
+                  js.src = "https://connect.facebook.net/en_US/sdk.js";
+                  fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+              }
             `,
           }}
         />
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if ('serviceWorker' in navigator) {
+              if (typeof window !== "undefined" && 'serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {

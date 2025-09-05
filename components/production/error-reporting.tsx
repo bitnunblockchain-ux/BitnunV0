@@ -15,6 +15,8 @@ interface ErrorInfo {
 
 export function ErrorReporting() {
   useEffect(() => {
+    if (typeof window === "undefined") return
+
     const handleError = (event: ErrorEvent) => {
       const errorInfo: ErrorInfo = {
         message: event.message,
@@ -23,8 +25,8 @@ export function ErrorReporting() {
         colno: event.colno,
         error: event.error,
         timestamp: Date.now(),
-        userAgent: navigator.userAgent,
-        url: window.location.href,
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "server",
+        url: typeof window !== "undefined" ? window.location.href : "server",
       }
 
       // Send error to monitoring service
@@ -49,8 +51,8 @@ export function ErrorReporting() {
         message: "Unhandled Promise Rejection",
         reason: event.reason,
         timestamp: Date.now(),
-        userAgent: navigator.userAgent,
-        url: window.location.href,
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "server",
+        url: typeof window !== "undefined" ? window.location.href : "server",
       }
 
       if (process.env.NODE_ENV === "production") {

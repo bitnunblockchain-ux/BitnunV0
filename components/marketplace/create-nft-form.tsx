@@ -88,7 +88,10 @@ export function CreateNFTForm() {
                         variant="outline"
                         onClick={() => {
                           if (typeof document !== "undefined") {
-                            document.getElementById("file-upload")?.click()
+                            const fileInput = document.getElementById("file-upload")
+                            if (fileInput) {
+                              fileInput.click()
+                            }
                           }
                         }}
                       >
