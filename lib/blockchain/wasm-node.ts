@@ -15,7 +15,8 @@ export class WASMBlockchainNode {
 
   constructor() {
     this.nodeId = this.generateNodeId()
-    if (typeof window !== "undefined") {
+    // Only initialize if we're in a browser environment
+    if (typeof window !== "undefined" && typeof self !== "undefined") {
       this.initializeWASMWorker()
       this.initializeEnhancedFeatures()
     } else {
@@ -34,22 +35,25 @@ export class WASMBlockchainNode {
     }
 
     try {
-      // Initialize WebAssembly worker for blockchain operations
-      this.worker = new Worker("/workers/blockchain-worker.js")
+      // Only create worker in browser environment
+      if (typeof self !== "undefined" && typeof window !== "undefined") {
+        // Initialize WebAssembly worker for blockchain operations
+        this.worker = new Worker("/workers/blockchain-worker.js")
 
-      this.worker.onmessage = (event) => {
-        const { type, data } = event.data
-        this.handleWorkerMessage(type, data)
+        this.worker.onmessage = (event) => {
+          const { type, data } = event.data
+          this.handleWorkerMessage(type, data)
+        }
+
+        // Initialize the WASM module
+        this.worker.postMessage({
+          type: "INIT_WASM",
+          nodeId: this.nodeId,
+        })
+
+        this.isInitialized = true
+        console.log(`[v0] WASM Blockchain Node ${this.nodeId} initialized`)
       }
-
-      // Initialize the WASM module
-      this.worker.postMessage({
-        type: "INIT_WASM",
-        nodeId: this.nodeId,
-      })
-
-      this.isInitialized = true
-      console.log(`[v0] WASM Blockchain Node ${this.nodeId} initialized`)
     } catch (error) {
       console.error("[v0] Failed to initialize WASM worker:", error)
     }
@@ -481,5 +485,15 @@ class BridgeConnection {
   }
 }
 
-// Singleton instance
-export const blockchainNode = new WASMBlockchainNode()
+// Lazy singleton instance
+let _blockchainNode: WASMBlockchainNode | null = null
+
+export const getBlockchainNode = (): WASMBlockchainNode => {
+  if (!_blockchainNode) {
+    _blockchainNode = new WASMBlockchainNode()
+  }
+  return _blockchainNode
+}
+
+// For backward compatibility
+export const blockchainNode = typeof window !== "undefined" ? getBlockchainNode() : null

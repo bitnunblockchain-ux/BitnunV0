@@ -31,37 +31,39 @@ const nextConfig = {
   webpack: (config, { dev, isServer, webpack }) => {
     // Fix for "self is not defined" error in server-side rendering
     if (isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        canvas: false,
-        encoding: false,
-      }
-      
-      // Add polyfill for browser globals like 'self'
-      config.plugins.push(
-        new webpack.DefinePlugin({
-          'self': 'globalThis',
+      // Add polyfill at the top of each server-side chunk
+      const originalEntry = config.entry
+      config.entry = async () => {
+        const entries = await originalEntry()
+        
+        // Add polyfill to all server entries
+        Object.keys(entries).forEach((key) => {
+          if (Array.isArray(entries[key])) {
+            entries[key].unshift('./polyfills.js')
+          }
         })
-      )
+        
+        return entries
+      }
     }
 
     // Production optimizations
     if (!dev) {
+      // Simplify chunk splitting to avoid potential issues
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-          common: {
-            name: 'common',
+          default: {
             minChunks: 2,
-            chunks: 'all',
-            enforce: true,
+            priority: -20,
+            reuseExistingChunk: true
           },
-        },
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+            reuseExistingChunk: true
+          }
+        }
       }
     }
     
