@@ -131,8 +131,7 @@ async function processSubscription(
       plan_id: plan.id,
       stripe_subscription_id: subscription.id,
       status: "pending",
-      current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-      current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+      // These will be updated via webhooks when the subscription is confirmed
     })
 
     return NextResponse.json({
