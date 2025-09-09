@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 export async function POST(request: NextRequest) {
   try {
     const { amount, currency, wallet_address, user_id, crypto_type } = await request.json()
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Generate payment address and amount for crypto payment
     const paymentData = await generateCryptoPayment(crypto_type, amount, currency)
@@ -97,6 +97,6 @@ function generateQRCodeSVG(data: string): string {
   // Simple QR code SVG generation (in production, use proper QR library)
   return `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" fill="white"/>
-    <text x="100" y="100" text-anchor="middle" font-size="12" fill="black">QR: ${data.slice(0, 20)}...</text>
+    <text x="100" y="100" textAnchor="middle" fontSize="12" fill="black">QR: ${data.slice(0, 20)}...</text>
   </svg>`
 }
