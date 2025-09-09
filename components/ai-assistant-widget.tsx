@@ -1,7 +1,8 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { useChat } from "ai"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,7 +11,34 @@ import { Bot, X, Send, User } from "lucide-react"
 
 export function AIAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false)
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat()
+  const [messages, setMessages] = useState<Array<{ id: string; role: string; content: string }>>([])
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim()) return
+
+    const userMessage = { id: Date.now().toString(), role: "user", content: input }
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
+
+    // Simulate AI response
+    setTimeout(() => {
+      const aiMessage = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I&apos;m here to help! This is a placeholder response while the AI integration is being configured.",
+      }
+      setMessages((prev) => [...prev, aiMessage])
+      setIsLoading(false)
+    }, 1000)
+  }
 
   return (
     <>
@@ -51,7 +79,7 @@ export function AIAssistantWidget() {
                   {messages.length === 0 && (
                     <div className="text-center text-slate-400 py-4">
                       <Bot className="h-8 w-8 mx-auto mb-2 text-purple-400" />
-                      <p className="text-xs">Hi! I'm your AI assistant. How can I help?</p>
+                      <p className="text-xs">Hi! I&apos;m your AI assistant. How can I help?</p>
                     </div>
                   )}
 

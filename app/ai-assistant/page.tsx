@@ -1,7 +1,8 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { useChat } from "ai"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,7 +11,36 @@ import { Badge } from "@/components/ui/badge"
 import { Bot, User, Send, Zap, TrendingUp, Wallet, Code } from "lucide-react"
 
 export default function AIAssistantPage() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat()
+  const [messages, setMessages] = useState<Array<{ id: string; role: string; content: string }>>([])
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim()) return
+
+    const userMessage = { id: Date.now().toString(), role: "user", content: input }
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
+
+    // Simulate AI response
+    setTimeout(() => {
+      const aiMessage = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content:
+          "I'm here to help with your blockchain operations. This is a placeholder response while the AI integration is being configured.",
+      }
+      setMessages((prev) => [...prev, aiMessage])
+      setIsLoading(false)
+    }, 1000)
+  }
+
   const [activeTools, setActiveTools] = useState<string[]>([])
 
   const quickActions = [
@@ -50,7 +80,7 @@ export default function AIAssistantPage() {
                     key={index}
                     variant="outline"
                     className="w-full justify-start border-slate-600 text-slate-300 hover:bg-slate-700/50 bg-transparent"
-                    onClick={() => handleInputChange({ target: { value: action.prompt } } as any)}
+                    onClick={() => setInput(action.prompt)}
                   >
                     <action.icon className="h-4 w-4 mr-2" />
                     {action.label}
@@ -120,16 +150,6 @@ export default function AIAssistantPage() {
                             }`}
                           >
                             <div className="text-white whitespace-pre-wrap">{message.content}</div>
-                            {message.toolInvocations && (
-                              <div className="mt-2 space-y-2">
-                                {message.toolInvocations.map((tool, index) => (
-                                  <div key={index} className="p-2 bg-slate-800/50 rounded border border-slate-600">
-                                    <div className="text-xs text-slate-400 mb-1">Tool: {tool.toolName}</div>
-                                    <div className="text-sm text-green-400">{JSON.stringify(tool.result, null, 2)}</div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
                           </div>
                         </div>
                       </div>
