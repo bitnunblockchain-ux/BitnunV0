@@ -17,15 +17,10 @@ export async function POST(req: Request) {
         parameters: z.object({
           address: z.string().describe("Wallet address"),
         }),
-        execute: ({ address }: { address: string }) => {
-          return supabase
-            .from("user_wallets")
-            .select("balance")
-            .eq("address", address)
-            .single()
-            .then(({ data }) => ({
-              balance: data?.balance || 0,
-            }))
+        execute: async ({ address }: { address: string }) => {
+          const { data } = await supabase.from("user_wallets").select("balance").eq("address", address).single()
+
+          return { balance: data?.balance || 0 }
         },
       }),
 
@@ -35,14 +30,15 @@ export async function POST(req: Request) {
           userId: z.string().describe("User ID"),
           limit: z.number().optional().describe("Number of transactions"),
         }),
-        execute: ({ userId, limit = 10 }: { userId: string; limit?: number }) => {
-          return supabase
+        execute: async ({ userId, limit = 10 }: { userId: string; limit?: number }) => {
+          const { data } = await supabase
             .from("transactions")
             .select("*")
             .eq("user_id", userId)
             .order("created_at", { ascending: false })
             .limit(limit)
-            .then(({ data }) => ({ transactions: data || [] }))
+
+          return { transactions: data || [] }
         },
       }),
 
@@ -55,14 +51,14 @@ export async function POST(req: Request) {
           amount: z.number().describe("Amount to trade"),
           price: z.number().describe("Price per unit"),
         }),
-        execute: ({
+        execute: async ({
           userId,
           pair,
           type,
           amount,
           price,
         }: { userId: string; pair: string; type: "buy" | "sell"; amount: number; price: number }) => {
-          return supabase
+          const { data, error } = await supabase
             .from("orders")
             .insert({
               user_id: userId,
@@ -74,10 +70,9 @@ export async function POST(req: Request) {
             })
             .select()
             .single()
-            .then(({ data, error }) => {
-              if (error) throw new Error(error.message)
-              return { order: data, message: `${type} order created successfully` }
-            })
+
+          if (error) throw new Error(error.message)
+          return { order: data, message: `${type} order created successfully` }
         },
       }),
 
@@ -86,16 +81,18 @@ export async function POST(req: Request) {
         parameters: z.object({
           userId: z.string().describe("User ID"),
         }),
-        execute: ({ userId }: { userId: string }) => {
-          return Promise.all([
+        execute: async ({ userId }: { userId: string }) => {
+          const [wallets, stakes, positions] = await Promise.all([
             supabase.from("user_wallets").select("*").eq("user_id", userId),
             supabase.from("user_stakes").select("*").eq("user_id", userId),
             supabase.from("user_positions").select("*").eq("user_id", userId),
-          ]).then(([wallets, stakes, positions]) => ({
+          ])
+
+          return {
             wallets: wallets.data,
             stakes: stakes.data,
             positions: positions.data,
-          }))
+          }
         },
       }),
 
@@ -106,14 +103,14 @@ export async function POST(req: Request) {
           contractCode: z.string().describe("Contract source code"),
           contractName: z.string().describe("Contract name"),
         }),
-        execute: ({
+        execute: async ({
           userId,
           contractCode,
           contractName,
         }: { userId: string; contractCode: string; contractName: string }) => {
           const contractAddress = `0x${Math.random().toString(16).substr(2, 40)}`
 
-          return supabase
+          const { data, error } = await supabase
             .from("smart_contracts")
             .insert({
               user_id: userId,
@@ -124,10 +121,9 @@ export async function POST(req: Request) {
             })
             .select()
             .single()
-            .then(({ data, error }) => {
-              if (error) throw new Error(error.message)
-              return { contract: data, address: contractAddress }
-            })
+
+          if (error) throw new Error(error.message)
+          return { contract: data, address: contractAddress }
         },
       }),
     },
