@@ -17,9 +17,8 @@ export async function POST(req: Request) {
         parameters: z.object({
           address: z.string().describe("Wallet address"),
         }),
-        execute: async ({ address }: { address: string }) => {
+        execute: async ({ address }) => {
           const { data } = await supabase.from("user_wallets").select("balance").eq("address", address).single()
-
           return { balance: data?.balance || 0 }
         },
       }),
@@ -30,14 +29,13 @@ export async function POST(req: Request) {
           userId: z.string().describe("User ID"),
           limit: z.number().optional().describe("Number of transactions"),
         }),
-        execute: async ({ userId, limit = 10 }: { userId: string; limit?: number }) => {
+        execute: async ({ userId, limit = 10 }) => {
           const { data } = await supabase
             .from("transactions")
             .select("*")
             .eq("user_id", userId)
             .order("created_at", { ascending: false })
             .limit(limit)
-
           return { transactions: data || [] }
         },
       }),
@@ -51,13 +49,7 @@ export async function POST(req: Request) {
           amount: z.number().describe("Amount to trade"),
           price: z.number().describe("Price per unit"),
         }),
-        execute: async ({
-          userId,
-          pair,
-          type,
-          amount,
-          price,
-        }: { userId: string; pair: string; type: "buy" | "sell"; amount: number; price: number }) => {
+        execute: async ({ userId, pair, type, amount, price }) => {
           const { data, error } = await supabase
             .from("orders")
             .insert({
@@ -81,7 +73,7 @@ export async function POST(req: Request) {
         parameters: z.object({
           userId: z.string().describe("User ID"),
         }),
-        execute: async ({ userId }: { userId: string }) => {
+        execute: async ({ userId }) => {
           const [wallets, stakes, positions] = await Promise.all([
             supabase.from("user_wallets").select("*").eq("user_id", userId),
             supabase.from("user_stakes").select("*").eq("user_id", userId),
@@ -103,11 +95,7 @@ export async function POST(req: Request) {
           contractCode: z.string().describe("Contract source code"),
           contractName: z.string().describe("Contract name"),
         }),
-        execute: async ({
-          userId,
-          contractCode,
-          contractName,
-        }: { userId: string; contractCode: string; contractName: string }) => {
+        execute: async ({ userId, contractCode, contractName }) => {
           const contractAddress = `0x${Math.random().toString(16).substr(2, 40)}`
 
           const { data, error } = await supabase
