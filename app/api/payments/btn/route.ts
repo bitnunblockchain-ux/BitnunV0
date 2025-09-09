@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 export async function POST(request: NextRequest) {
   try {
     const { amount, from_user_id, to_user_id, description } = await request.json()
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Check sender's BTN balance
     const { data: senderBalance } = await supabase
