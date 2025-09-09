@@ -15,7 +15,7 @@ export default function VerifyEmailPage() {
               </div>
             </div>
             <CardTitle className="text-2xl font-bold text-white">Check Your Email</CardTitle>
-            <CardDescription className="text-gray-400">We've sent you a verification link</CardDescription>
+            <CardDescription className="text-gray-400">We&apos;ve sent you a verification link</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center space-y-2">
@@ -23,7 +23,7 @@ export default function VerifyEmailPage() {
                 Please check your email and click the verification link to activate your BitnunEco account.
               </p>
               <p className="text-sm text-gray-400">
-                Don't see the email? Check your spam folder or try signing up again.
+                Don&apos;t see the email? Check your spam folder or try signing up again.
               </p>
             </div>
 

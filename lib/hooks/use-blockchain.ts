@@ -10,8 +10,8 @@ const getBlockchainNode = async () => {
 
   if (!enhancedBlockchainNode) {
     try {
-      const module = await import("../blockchain/enhanced-wasm-node")
-      enhancedBlockchainNode = module.getEnhancedBlockchainNode()
+      const moduleImport = await import("../blockchain/enhanced-wasm-node")
+      enhancedBlockchainNode = moduleImport.getEnhancedBlockchainNode()
     } catch (error) {
       // Only log critical errors, not expected initialization failures
       if (error instanceof Error && !error.message.includes("blockchain node")) {
