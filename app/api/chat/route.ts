@@ -29,5 +29,5 @@ Current platform features:
 - Market analysis`,
   })
 
-  return result.toDataStreamResponse()
+  return result.toTextStreamResponse()
 }
