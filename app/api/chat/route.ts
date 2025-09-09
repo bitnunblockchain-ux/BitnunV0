@@ -17,10 +17,15 @@ export async function POST(req: Request) {
         parameters: z.object({
           address: z.string().describe("Wallet address"),
         }),
-        execute: async ({ address }) => {
-          const { data } = await supabase.from("user_wallets").select("balance").eq("address", address).single()
-
-          return { balance: data?.balance || 0 }
+        execute: ({ address }: { address: string }) => {
+          return supabase
+            .from("user_wallets")
+            .select("balance")
+            .eq("address", address)
+            .single()
+            .then(({ data }) => ({
+              balance: data?.balance || 0,
+            }))
         },
       }),
 
@@ -30,15 +35,14 @@ export async function POST(req: Request) {
           userId: z.string().describe("User ID"),
           limit: z.number().optional().describe("Number of transactions"),
         }),
-        execute: async ({ userId, limit = 10 }) => {
-          const { data } = await supabase
+        execute: ({ userId, limit = 10 }: { userId: string; limit?: number }) => {
+          return supabase
             .from("transactions")
             .select("*")
             .eq("user_id", userId)
             .order("created_at", { ascending: false })
             .limit(limit)
-
-          return { transactions: data || [] }
+            .then(({ data }) => ({ transactions: data || [] }))
         },
       }),
 
@@ -51,8 +55,14 @@ export async function POST(req: Request) {
           amount: z.number().describe("Amount to trade"),
           price: z.number().describe("Price per unit"),
         }),
-        execute: async ({ userId, pair, type, amount, price }) => {
-          const { data, error } = await supabase
+        execute: ({
+          userId,
+          pair,
+          type,
+          amount,
+          price,
+        }: { userId: string; pair: string; type: "buy" | "sell"; amount: number; price: number }) => {
+          return supabase
             .from("orders")
             .insert({
               user_id: userId,
@@ -64,9 +74,10 @@ export async function POST(req: Request) {
             })
             .select()
             .single()
-
-          if (error) throw new Error(error.message)
-          return { order: data, message: `${type} order created successfully` }
+            .then(({ data, error }) => {
+              if (error) throw new Error(error.message)
+              return { order: data, message: `${type} order created successfully` }
+            })
         },
       }),
 
@@ -75,14 +86,16 @@ export async function POST(req: Request) {
         parameters: z.object({
           userId: z.string().describe("User ID"),
         }),
-        execute: async ({ userId }) => {
-          const { data: wallets } = await supabase.from("user_wallets").select("*").eq("user_id", userId)
-
-          const { data: stakes } = await supabase.from("user_stakes").select("*").eq("user_id", userId)
-
-          const { data: positions } = await supabase.from("user_positions").select("*").eq("user_id", userId)
-
-          return { wallets, stakes, positions }
+        execute: ({ userId }: { userId: string }) => {
+          return Promise.all([
+            supabase.from("user_wallets").select("*").eq("user_id", userId),
+            supabase.from("user_stakes").select("*").eq("user_id", userId),
+            supabase.from("user_positions").select("*").eq("user_id", userId),
+          ]).then(([wallets, stakes, positions]) => ({
+            wallets: wallets.data,
+            stakes: stakes.data,
+            positions: positions.data,
+          }))
         },
       }),
 
@@ -93,10 +106,14 @@ export async function POST(req: Request) {
           contractCode: z.string().describe("Contract source code"),
           contractName: z.string().describe("Contract name"),
         }),
-        execute: async ({ userId, contractCode, contractName }) => {
+        execute: ({
+          userId,
+          contractCode,
+          contractName,
+        }: { userId: string; contractCode: string; contractName: string }) => {
           const contractAddress = `0x${Math.random().toString(16).substr(2, 40)}`
 
-          const { data, error } = await supabase
+          return supabase
             .from("smart_contracts")
             .insert({
               user_id: userId,
@@ -107,9 +124,10 @@ export async function POST(req: Request) {
             })
             .select()
             .single()
-
-          if (error) throw new Error(error.message)
-          return { contract: data, address: contractAddress }
+            .then(({ data, error }) => {
+              if (error) throw new Error(error.message)
+              return { contract: data, address: contractAddress }
+            })
         },
       }),
     },
