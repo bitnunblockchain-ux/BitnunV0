@@ -110,7 +110,7 @@ export default function MiningPage() {
                   <span className="text-gray-300">Earnings</span>
                 </div>
                 <p className="text-2xl font-bold text-white">{miningStats.earnings.toFixed(4)} BTN</p>
-                <p className="text-sm text-gray-400">Today's earnings</p>
+                <p className="text-sm text-gray-400">Today&apos;s earnings</p>
               </div>
 
               <div className="bg-gray-700/30 rounded-lg p-4">
