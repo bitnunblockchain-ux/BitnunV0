@@ -109,7 +109,6 @@ async function processSubscription(
       recurring: { interval },
       product_data: {
         name: `${plan.name} Plan`,
-        description: `BitnunEco ${plan.name} subscription`,
       },
     })
 
