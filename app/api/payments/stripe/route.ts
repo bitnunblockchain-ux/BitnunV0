@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(request: NextRequest) {
   try {
     const { amount, currency, payment_method_id, user_id } = await request.json()
-    const supabase = createClient()
+    const supabase = await createClient() // Added await before createClient() to fix Promise type error
 
     // Create payment intent with Stripe
     const paymentIntent = await stripe.paymentIntents.create({
