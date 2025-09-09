@@ -119,7 +119,7 @@ export default function TradingPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-white">${(pair.price * 1.15).toFixed(2)}</div>
-                    <p className="text-xs text-gray-400">Today's peak</p>
+                    <p className="text-xs text-gray-400">Today&apos;s peak</p>
                   </CardContent>
                 </Card>
 
@@ -130,7 +130,7 @@ export default function TradingPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold text-white">${(pair.price * 0.92).toFixed(2)}</div>
-                    <p className="text-xs text-gray-400">Today's low</p>
+                    <p className="text-xs text-gray-400">Today&apos;s low</p>
                   </CardContent>
                 </Card>
               </div>
