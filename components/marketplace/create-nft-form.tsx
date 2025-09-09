@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
+import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -101,9 +101,11 @@ export function CreateNFTForm() {
                   </div>
                 ) : (
                   <div className="relative">
-                    <img
+                    <Image
                       src={previewUrl || "/placeholder.svg"}
                       alt="Preview"
+                      width={400}
+                      height={256}
                       className="w-full h-64 object-cover rounded-lg"
                     />
                     <Button
@@ -248,9 +250,11 @@ export function CreateNFTForm() {
               <div className="space-y-4">
                 <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
                   {previewUrl ? (
-                    <img
+                    <Image
                       src={previewUrl || "/placeholder.svg"}
                       alt="Preview"
+                      width={200}
+                      height={200}
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (

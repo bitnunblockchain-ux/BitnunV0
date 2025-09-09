@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Users, Star, Copy, ExternalLink } from "lucide-react"
+import Image from "next/image"
 
 interface TradingSignal {
   id: string
@@ -117,10 +118,12 @@ export function TradingSignals() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <img
+                  <Image
                     src={signal.traderAvatar || "/placeholder.svg"}
                     alt={signal.trader}
-                    className="w-10 h-10 rounded-full border-2 border-emerald-500/30"
+                    width={40}
+                    height={40}
+                    className="rounded-full border-2 border-emerald-500/30"
                   />
                   <div>
                     <div className="flex items-center gap-2">

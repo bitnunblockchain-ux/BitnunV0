@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, Plus, ExternalLink } from "lucide-react"
+import Image from "next/image"
 
 export function InfluencerProgram() {
   const influencers = [
@@ -139,10 +140,12 @@ export function InfluencerProgram() {
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <img
+                <Image
                   src={influencer.avatar || "/placeholder.svg"}
                   alt={influencer.name}
-                  className="w-12 h-12 rounded-full"
+                  width={48}
+                  height={48}
+                  className="rounded-full"
                 />
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">{influencer.name}</h3>

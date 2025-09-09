@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GitCommit, GitPullRequest, Bug, Star, Award } from "lucide-react"
+import Image from "next/image"
 
 export function ContributorDashboard() {
   const topContributors = [
@@ -125,10 +126,12 @@ export function ContributorDashboard() {
                       >
                         {contributor.rank}
                       </div>
-                      <img
+                      <Image
                         src={contributor.avatar || "/placeholder.svg"}
                         alt={contributor.name}
-                        className="w-10 h-10 rounded-full"
+                        width={40}
+                        height={40}
+                        className="rounded-full"
                       />
                       <div>
                         <h3 className="font-semibold text-gray-900 dark:text-white">{contributor.name}</h3>

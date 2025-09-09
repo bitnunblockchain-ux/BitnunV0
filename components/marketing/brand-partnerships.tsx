@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, ExternalLink, Plus } from "lucide-react"
+import Image from "next/image"
 
 export function BrandPartnerships() {
   const partnerships = [
@@ -92,10 +93,12 @@ export function BrandPartnerships() {
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-4">
-                <img
+                <Image
                   src={partnership.logo || "/placeholder.svg"}
                   alt={partnership.name}
-                  className="w-16 h-8 object-contain bg-gray-100 dark:bg-gray-700 rounded p-1"
+                  width={64}
+                  height={32}
+                  className="object-contain bg-gray-100 dark:bg-gray-700 rounded p-1"
                 />
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{partnership.name}</h3>

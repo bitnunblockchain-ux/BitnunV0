@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Heart, MessageCircle, TrendingUp, Award, Zap, Users } from "lucide-react"
 import { SocialShare } from "./social-share"
+import Image from "next/image"
 
 interface SocialPost {
   id: string
@@ -131,10 +132,12 @@ export function SocialFeed() {
           <div key={post.id} className="glass-effect rounded-xl p-6 hover:bg-primary/5 transition-all duration-300">
             <div className="flex items-start space-x-4">
               <div className="relative">
-                <img
+                <Image
                   src={post.user.avatar || "/placeholder.svg"}
                   alt={post.user.name}
-                  className="w-12 h-12 rounded-full object-cover"
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover"
                 />
                 {post.user.verified && (
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
