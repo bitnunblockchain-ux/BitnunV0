@@ -98,10 +98,10 @@ export default function CareersPage() {
         </div>
 
         <div className="interactive-card p-8 mt-16 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Don't See Your Role?</h2>
+          <h2 className="text-3xl font-bold text-white mb-4">Don&apos;t See Your Role?</h2>
           <p className="text-slate-300 mb-6">
-            We're always looking for talented individuals to join our mission. Send us your resume and let us know how
-            you'd like to contribute.
+            We&apos;re always looking for talented individuals to join our mission. Send us your resume and let us know
+            how you&apos;d like to contribute.
           </p>
           <button className="bg-gradient-to-r from-cyan-500 to-emerald-500 text-white px-8 py-3 rounded-lg hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300">
             Send Resume
