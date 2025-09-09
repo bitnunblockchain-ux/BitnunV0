@@ -175,12 +175,7 @@ async function processCredits(
 
     if (paymentIntent.status === "succeeded") {
       // Add credits to user account
-      await supabase.rpc("add_user_credits", {
-        user_id: userId,
-        amount: creditAmount,
-        transaction_type: "purchase",
-        description: `Purchased ${creditAmount} credits`,
-      })
+      await addUserCredits(supabase, userId, creditAmount, "purchase", `Purchased ${creditAmount} credits`)
 
       // Record revenue
       await supabase.from("revenue_tracking").upsert(
@@ -263,7 +258,7 @@ async function processOneTimePayment(
 }
 
 // Helper function to add credits (called via RPC)
-export async function addUserCredits(
+async function addUserCredits(
   supabase: any,
   userId: string,
   amount: number,
