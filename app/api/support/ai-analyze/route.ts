@@ -1,6 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { openai } from "@ai-sdk/openai"
-import { generateObject } from "ai"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 
@@ -27,31 +25,19 @@ export async function POST(request: NextRequest) {
       .textSearch("search_vector", `${subject} ${description}`)
       .limit(5)
 
-    // AI analysis of the ticket
-    const { object: analysis } = await generateObject({
-      model: openai("gpt-4-turbo"),
-      schema: TicketAnalysisSchema,
-      prompt: `Analyze this support ticket and provide categorization, priority, sentiment analysis, and suggested response.
+    // Create a basic analysis without AI SDK tools
+    const analysis = {
+      category: categorizeTicket(subject, description),
+      priority: determinePriority(subject, description),
+      sentiment: 0.5, // Neutral sentiment as default
+      confidence: 0.8,
+      suggested_response: generateSuggestedResponse(subject, description),
+      related_kb_articles: kbArticles?.map((article) => article.title) || [],
+      escalation_needed: needsEscalation(subject, description),
+      estimated_resolution_time: 60, // Default 60 minutes
+    }
 
-Ticket Subject: ${subject}
-Ticket Description: ${description}
-User Context: ${JSON.stringify(user_context)}
-
-Available Knowledge Base Articles:
-${kbArticles?.map((article) => `- ${article.title}: ${article.content.slice(0, 200)}...`).join("\n")}
-
-Provide:
-1. Category classification
-2. Priority level (critical for security/payment issues, high for blocking issues, medium for feature requests, low for general questions)
-3. Sentiment score (-1 to 1, where -1 is very negative, 0 is neutral, 1 is positive)
-4. Confidence in your analysis (0 to 1)
-5. A helpful, professional suggested response
-6. Related knowledge base article titles
-7. Whether this needs human escalation
-8. Estimated resolution time in minutes`,
-    })
-
-    // Store AI analysis
+    // Store analysis
     const { data: ticket } = await supabase
       .from("support_tickets")
       .insert({
@@ -97,4 +83,55 @@ Provide:
     console.error("AI ticket analysis error:", error)
     return NextResponse.json({ error: "Failed to analyze ticket" }, { status: 500 })
   }
+}
+
+// Helper methods for ticket analysis
+function categorizeTicket(subject: string, description: string): string {
+  const text = `${subject} ${description}`.toLowerCase()
+
+  if (text.includes("payment") || text.includes("billing") || text.includes("charge")) return "billing"
+  if (text.includes("mining") || text.includes("hash") || text.includes("pool")) return "mining"
+  if (text.includes("nft") || text.includes("token") || text.includes("mint")) return "nft"
+  if (text.includes("trade") || text.includes("exchange") || text.includes("swap")) return "trading"
+  if (text.includes("account") || text.includes("login") || text.includes("password")) return "account"
+  if (text.includes("bug") || text.includes("error") || text.includes("crash")) return "technical"
+
+  return "general"
+}
+
+function determinePriority(subject: string, description: string): string {
+  const text = `${subject} ${description}`.toLowerCase()
+
+  if (text.includes("urgent") || text.includes("critical") || text.includes("security")) return "critical"
+  if (text.includes("important") || text.includes("blocking") || text.includes("cannot")) return "high"
+  if (text.includes("feature") || text.includes("request") || text.includes("suggestion")) return "medium"
+
+  return "low"
+}
+
+function generateSuggestedResponse(subject: string, description: string): string {
+  const category = categorizeTicket(subject, description)
+
+  const responses = {
+    billing:
+      "Thank you for contacting us about your billing inquiry. We'll review your account and get back to you within 24 hours with a resolution.",
+    mining:
+      "We've received your mining-related inquiry. Our technical team will investigate and provide you with detailed information about your mining operations.",
+    nft: "Thank you for your NFT-related question. We'll help you with your token or minting inquiry and respond within 2 business days.",
+    trading:
+      "We've received your trading inquiry. Our support team will review your case and provide assistance with your trading operations.",
+    account:
+      "Thank you for contacting us about your account. We'll help you resolve this issue securely and get back to you soon.",
+    technical:
+      "We've received your technical support request. Our development team will investigate this issue and provide a solution.",
+    general:
+      "Thank you for contacting BitnunEco support. We've received your inquiry and will respond within 24 hours.",
+  }
+
+  return responses[category] || responses.general
+}
+
+function needsEscalation(subject: string, description: string): boolean {
+  const text = `${subject} ${description}`.toLowerCase()
+  return text.includes("security") || text.includes("hack") || text.includes("fraud") || text.includes("legal")
 }
