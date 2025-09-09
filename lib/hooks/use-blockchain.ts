@@ -13,7 +13,10 @@ const getBlockchainNode = async () => {
       const module = await import("../blockchain/enhanced-wasm-node")
       enhancedBlockchainNode = module.getEnhancedBlockchainNode()
     } catch (error) {
-      console.error("[v0] Failed to load blockchain node:", error)
+      // Only log critical errors, not expected initialization failures
+      if (error instanceof Error && !error.message.includes("blockchain node")) {
+        console.error("Critical blockchain error:", error.message)
+      }
       return null
     }
   }
@@ -61,7 +64,9 @@ export function useBlockchain() {
           }
         }
       } catch (error) {
-        console.error("[v0] User initialization failed:", error)
+        if (error instanceof Error) {
+          console.error("User initialization failed:", error.message)
+        }
       }
     }
 
@@ -109,7 +114,10 @@ export function useBlockchain() {
             .eq("id", user.id)
         }
       } catch (error) {
-        console.error("[v0] Stats update failed:", error)
+        // Only log if it's a critical error, not routine connection issues
+        if (error instanceof Error && error.message.includes("critical")) {
+          console.error("Critical stats update failed:", error.message)
+        }
       }
     }
 
@@ -127,7 +135,6 @@ export function useBlockchain() {
         const node = await getBlockchainNode()
         if (!node) {
           const fallbackReward = Math.random() * 5
-          console.log(`[v0] Fallback action recorded: ${actionType} with reward: ${fallbackReward}`)
           return { reward: fallbackReward, multiplier: 1 }
         }
 
@@ -144,10 +151,9 @@ export function useBlockchain() {
           })
         }
 
-        console.log(`[v0] Recorded action: ${actionType} with reward: ${actionResult.reward}`)
         return actionResult
       } catch (error) {
-        console.error("[v0] Action recording failed:", error)
+        console.error("Action recording failed:", error instanceof Error ? error.message : error)
         return { reward: 0, multiplier: 1 }
       }
     },
@@ -173,10 +179,8 @@ export function useBlockchain() {
           mining_power: 1,
         })
       }
-
-      console.log("[v0] Mining started")
     } catch (error) {
-      console.error("[v0] Mining start failed:", error)
+      console.error("Mining start failed:", error instanceof Error ? error.message : error)
     }
   }, [user, supabase])
 
@@ -204,7 +208,7 @@ export function useBlockchain() {
 
       console.log("[v0] Mining stopped")
     } catch (error) {
-      console.error("[v0] Mining stop failed:", error)
+      console.error("Mining stop failed:", error instanceof Error ? error.message : error)
     }
   }, [user, stats.actionRewards, supabase])
 
@@ -235,8 +239,8 @@ export function useBlockchain() {
         console.log(`[v0] Transaction created: ${transaction.hash}`)
         return transaction
       } catch (error) {
-        console.error("[v0] Transaction creation failed:", error)
-        throw error
+        console.error("Transaction creation failed:", error instanceof Error ? error.message : error)
+        throw new Error(`Transaction failed: ${error instanceof Error ? error.message : "Unknown error"}`)
       }
     },
     [user, supabase],
@@ -263,7 +267,7 @@ export function useBlockchain() {
 
       return blockchainBalance
     } catch (error) {
-      console.error("[v0] Balance fetch failed:", error)
+      console.error("Balance fetch failed:", error instanceof Error ? error.message : error)
       return 0
     }
   }, [user, supabase])

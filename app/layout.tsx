@@ -1,12 +1,25 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
+import { Inter } from "next/font/google"
+import { JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Suspense } from "react"
 import { PerformanceMonitor } from "@/components/qa/performance-monitor"
+import { AIAssistantWidget } from "@/components/ai-assistant-widget"
 import "./globals.css"
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "BitnunEco - Next-Generation Blockchain Ecosystem",
@@ -95,12 +108,12 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#164e63" />
+        <meta name="theme-color" content="#e84142" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="BitnunEco" />
         <meta name="application-name" content="BitnunEco" />
-        <meta name="msapplication-TileColor" content="#164e63" />
+        <meta name="msapplication-TileColor" content="#e84142" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="google-site-verification" content="your-google-verification-code" />
         <meta name="facebook-domain-verification" content="your-facebook-verification-code" />
@@ -126,7 +139,7 @@ export default function RootLayout({
                 "@type": "ContactPoint",
                 telephone: "+1-555-123-4567",
                 contactType: "customer service",
-                email: "contact@bitnuneco.com",
+                email: "contact@bitnun.org",
               },
               address: {
                 "@type": "PostalAddress",
@@ -184,7 +197,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}>
+      <body className={`font-sans ${inter.variable} ${jetbrainsMono.variable} antialiased`}>
         <div id="root">
           <Suspense
             fallback={
@@ -199,6 +212,7 @@ export default function RootLayout({
             {children}
           </Suspense>
         </div>
+        <AIAssistantWidget />
         <Analytics />
         <SpeedInsights />
         <PerformanceMonitor />
@@ -251,10 +265,8 @@ export default function RootLayout({
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
-                      console.log('SW registered: ', registration);
                     })
                     .catch(function(registrationError) {
-                      console.log('SW registration failed: ', registrationError);
                     });
                 });
               }

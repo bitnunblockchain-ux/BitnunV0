@@ -26,7 +26,7 @@ export function SwapInterface({
   const [slippage, setSlippage] = useState(0.5)
 
   const handleSwap = () => {
-    console.log("[v0] Executing swap:", { fromToken, toToken, fromAmount, toAmount })
+    // TODO: Implement actual swap execution with proper error handling
   }
 
   const rate = 0.0245

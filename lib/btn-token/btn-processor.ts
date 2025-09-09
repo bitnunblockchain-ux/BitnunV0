@@ -72,7 +72,6 @@ class BTNTokenProcessor {
     // Update tokenomics
     await this.updateTokenomics("mint", amount)
 
-    console.log(`[BTN] Minted ${amount} BTN to ${recipient}`)
     return txHash
   }
 
@@ -105,7 +104,6 @@ class BTNTokenProcessor {
     await this.updateBalance(from, amount, "subtract")
     await this.updateTokenomics("burn", amount)
 
-    console.log(`[BTN] Burned ${amount} BTN from ${from}`)
     return txHash
   }
 
@@ -139,7 +137,6 @@ class BTNTokenProcessor {
     await this.updateBalance(from, amount, "subtract")
     await this.updateBalance(to, amount, "add")
 
-    console.log(`[BTN] Transferred ${amount} BTN from ${from} to ${to}`)
     return txHash
   }
 
@@ -191,7 +188,6 @@ class BTNTokenProcessor {
       .update({ total_staked: pool.total_staked + amount })
       .eq("id", poolId)
 
-    console.log(`[BTN] Staked ${amount} BTN in pool ${poolId}`)
     return txHash
   }
 
@@ -241,7 +237,6 @@ class BTNTokenProcessor {
     await this.updateBalance(this.walletAddress!, totalAmount, "add")
     await this.updateStakedBalance(this.walletAddress!, position.staked_amount, "subtract")
 
-    console.log(`[BTN] Unstaked ${position.staked_amount} BTN + ${rewards} rewards`)
     return txHash
   }
 
@@ -267,7 +262,6 @@ class BTNTokenProcessor {
 
     if (error) throw error
 
-    console.log(`[BTN] Created governance proposal: ${title}`)
     return data.id
   }
 
@@ -294,8 +288,6 @@ class BTNTokenProcessor {
       vote_field: updateField,
       vote_amount: votingPower,
     })
-
-    console.log(`[BTN] Voted ${choice} on proposal ${proposalId} with ${votingPower} voting power`)
   }
 
   // Helper Methods

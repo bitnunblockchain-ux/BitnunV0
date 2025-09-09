@@ -4,95 +4,97 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated to next-generation futuristic color palette */
-  --background: oklch(1 0 0); /* #ffffff - Pure white background */
-  --foreground: oklch(0.35 0.02 258); /* #475569 - Dark neutral text */
-  --card: oklch(0.98 0.01 195); /* #ecfeff - Light cyan card background */
-  --card-foreground: oklch(0.25 0.08 195); /* #164e63 - Cyan-800 text on cards */
-  --popover: oklch(1 0 0); /* #ffffff - White popover background */
-  --popover-foreground: oklch(0.35 0.02 258); /* #475569 - Dark popover text */
-  --primary: oklch(0.25 0.08 195); /* #164e63 - Cyan-800 primary color */
-  --primary-foreground: oklch(1 0 0); /* #ffffff - White text on primary */
-  --secondary: oklch(0.55 0.12 160); /* #10b981 - Emerald accent color */
-  --secondary-foreground: oklch(1 0 0); /* #ffffff - White text on secondary */
-  --muted: oklch(0.97 0.01 258); /* #f1f5f9 - Muted background sections */
-  --muted-foreground: oklch(0.35 0.02 258); /* #475569 - Muted text */
-  --accent: oklch(0.55 0.12 160); /* #10b981 - Emerald accent highlights */
-  --accent-foreground: oklch(1 0 0); /* #ffffff - White text on accent */
-  --destructive: oklch(0.55 0.22 25); /* #e53e3e - Red for errors */
-  --destructive-foreground: oklch(1 0 0); /* #ffffff - White text on destructive */
-  --border: oklch(0.92 0.01 258); /* #e2e8f0 - Light border */
-  --input: oklch(0.98 0.01 258); /* #f7fafc - Light input background */
-  --ring: oklch(0.55 0.12 160 / 0.5); /* Emerald focus ring with opacity */
-  --chart-1: oklch(0.25 0.08 195); /* #164e63 - Primary chart color */
-  --chart-2: oklch(0.55 0.12 160); /* #10b981 - Secondary chart color */
-  --chart-3: oklch(0.35 0.02 258); /* #4a5568 - Tertiary chart color */
-  --chart-4: oklch(0.45 0.01 258); /* #718096 - Quaternary chart color */
-  --chart-5: oklch(0.95 0.01 258); /* #edf2f7 - Quinary chart color */
-  --radius: 0.75rem; /* Increased corner rounding for modern look */
-  --sidebar: oklch(1 0 0); /* #ffffff - Sidebar background */
-  --sidebar-foreground: oklch(0.35 0.02 258); /* #475569 - Sidebar text */
-  --sidebar-primary: oklch(0.25 0.08 195); /* #164e63 - Primary sidebar actions */
-  --sidebar-primary-foreground: oklch(1 0 0); /* #ffffff - White text on sidebar primary */
-  --sidebar-accent: oklch(0.55 0.12 160); /* #10b981 - Sidebar accent */
-  --sidebar-accent-foreground: oklch(1 0 0); /* #ffffff - White text on sidebar accent */
-  --sidebar-border: oklch(0.92 0.01 258); /* #e2e8f0 - Sidebar border */
-  --sidebar-ring: oklch(0.55 0.12 160 / 0.5); /* Emerald sidebar focus ring */
+  /* Updated to Avalanche-inspired clean professional color scheme */
+  --background: #ffffff; /* Clean white background like Avalanche */
+  --foreground: #1a1a1a; /* Dark text for readability */
+  --card: #ffffff; /* White card background */
+  --card-foreground: #1a1a1a; /* Dark card text */
+  --popover: rgba(255, 255, 255, 0.95); /* Light popover */
+  --popover-foreground: #1a1a1a; /* Dark popover text */
+  --primary: #e84142; /* Avalanche red primary color */
+  --primary-foreground: #ffffff; /* White text on primary */
+  --secondary: #f5f5f5; /* Light gray secondary */
+  --secondary-foreground: #1a1a1a; /* Dark text on secondary */
+  --muted: #f8f9fa; /* Light muted background */
+  --muted-foreground: #6b7280; /* Gray muted text */
+  --accent: #e84142; /* Avalanche red accent */
+  --accent-foreground: #ffffff; /* White accent text */
+  --destructive: #dc2626; /* Red for errors */
+  --destructive-foreground: #ffffff; /* White destructive text */
+  --border: #e5e7eb; /* Light gray borders */
+  --input: #ffffff; /* White input background */
+  --ring: rgba(232, 65, 66, 0.3); /* Red focus ring */
+  --chart-1: #e84142; /* Avalanche red */
+  --chart-2: #3b82f6; /* Blue */
+  --chart-3: #10b981; /* Green */
+  --chart-4: #f59e0b; /* Amber */
+  --chart-5: #8b5cf6; /* Purple */
+  --radius: 0.5rem; /* Rounded corners */
+  --sidebar: #ffffff; /* White sidebar */
+  --sidebar-foreground: #1a1a1a; /* Dark sidebar text */
+  --sidebar-primary: #e84142; /* Red sidebar primary */
+  --sidebar-primary-foreground: #ffffff; /* White sidebar primary text */
+  --sidebar-accent: #f5f5f5; /* Light sidebar accent */
+  --sidebar-accent-foreground: #1a1a1a; /* Dark sidebar accent text */
+  --sidebar-border: #e5e7eb; /* Light sidebar border */
+  --sidebar-ring: rgba(232, 65, 66, 0.3); /* Red sidebar focus ring */
 
-  /* Added futuristic gradient variables */
-  --gradient-primary: linear-gradient(135deg, oklch(0.25 0.08 195), oklch(0.55 0.12 160));
-  --gradient-secondary: linear-gradient(135deg, oklch(0.55 0.12 160), oklch(0.65 0.15 160));
-  --gradient-accent: linear-gradient(135deg, oklch(0.98 0.01 195), oklch(0.92 0.01 258));
-  --glow-primary: 0 0 20px oklch(0.25 0.08 195 / 0.3);
-  --glow-accent: 0 0 20px oklch(0.55 0.12 160 / 0.3);
+  /* Clean professional gradients inspired by Avalanche */
+  --gradient-primary: linear-gradient(135deg, #e84142, #d73027);
+  --gradient-secondary: linear-gradient(135deg, #f5f5f5, #e5e7eb);
+  --gradient-accent: linear-gradient(135deg, #ffffff, #f8f9fa);
+  --glow-primary: 0 4px 20px rgba(232, 65, 66, 0.15);
+  --glow-accent: 0 4px 20px rgba(232, 65, 66, 0.1);
+  --neon-glow: 0 0 20px rgba(232, 65, 66, 0.2);
 }
 
 .dark {
-  /* Enhanced dark mode with futuristic cyan theme */
-  --background: oklch(0.08 0.01 258); /* Deep dark background */
-  --foreground: oklch(0.95 0.01 258); /* Light text */
-  --card: oklch(0.12 0.02 195); /* Dark cyan card background */
-  --card-foreground: oklch(0.95 0.01 258); /* Light card text */
-  --popover: oklch(0.08 0.01 258); /* Dark popover */
-  --popover-foreground: oklch(0.95 0.01 258); /* Light popover text */
-  --primary: oklch(0.45 0.12 195); /* Brighter cyan for dark mode */
-  --primary-foreground: oklch(0.08 0.01 258); /* Dark text on primary */
-  --secondary: oklch(0.55 0.12 160); /* Emerald secondary */
-  --secondary-foreground: oklch(0.08 0.01 258); /* Dark text on secondary */
-  --muted: oklch(0.15 0.01 258); /* Dark muted background */
-  --muted-foreground: oklch(0.65 0.01 258); /* Medium light muted text */
-  --accent: oklch(0.55 0.12 160); /* Emerald accent */
-  --accent-foreground: oklch(0.08 0.01 258); /* Dark accent text */
-  --destructive: oklch(0.45 0.18 25); /* Darker red for dark mode */
-  --destructive-foreground: oklch(0.95 0.01 258); /* Light destructive text */
-  --border: oklch(0.18 0.01 258); /* Dark border */
-  --input: oklch(0.15 0.01 258); /* Dark input background */
-  --ring: oklch(0.55 0.12 160 / 0.5); /* Emerald focus ring */
-  --chart-1: oklch(0.45 0.12 195); /* Bright cyan chart */
-  --chart-2: oklch(0.55 0.12 160); /* Emerald chart */
-  --chart-3: oklch(0.65 0.15 160); /* Light emerald chart */
-  --chart-4: oklch(0.25 0.08 195); /* Dark cyan chart */
-  --chart-5: oklch(0.15 0.01 258); /* Dark neutral chart */
-  --sidebar: oklch(0.12 0.01 258); /* Dark sidebar */
-  --sidebar-foreground: oklch(0.95 0.01 258); /* Light sidebar text */
-  --sidebar-primary: oklch(0.45 0.12 195); /* Bright cyan sidebar primary */
-  --sidebar-primary-foreground: oklch(0.08 0.01 258); /* Dark text on sidebar primary */
-  --sidebar-accent: oklch(0.55 0.12 160); /* Emerald sidebar accent */
-  --sidebar-accent-foreground: oklch(0.08 0.01 258); /* Dark text on sidebar accent */
-  --sidebar-border: oklch(0.18 0.01 258); /* Dark sidebar border */
-  --sidebar-ring: oklch(0.55 0.12 160 / 0.5); /* Emerald sidebar focus ring */
+  /* Professional dark mode with Avalanche-inspired colors */
+  --background: #0f0f0f; /* Deep dark background */
+  --foreground: #ffffff; /* White text */
+  --card: #1a1a1a; /* Dark card background */
+  --card-foreground: #ffffff; /* White card text */
+  --popover: rgba(26, 26, 26, 0.95); /* Dark popover */
+  --popover-foreground: #ffffff; /* White popover text */
+  --primary: #e84142; /* Avalanche red primary */
+  --primary-foreground: #ffffff; /* White text on primary */
+  --secondary: #262626; /* Dark gray secondary */
+  --secondary-foreground: #ffffff; /* White text on secondary */
+  --muted: #1a1a1a; /* Dark muted background */
+  --muted-foreground: #9ca3af; /* Light gray muted text */
+  --accent: #e84142; /* Avalanche red accent */
+  --accent-foreground: #ffffff; /* White accent text */
+  --destructive: #dc2626; /* Red for errors */
+  --destructive-foreground: #ffffff; /* White destructive text */
+  --border: #404040; /* Dark gray borders */
+  --input: #1a1a1a; /* Dark input background */
+  --ring: rgba(232, 65, 66, 0.5); /* Red focus ring */
+  --chart-1: #e84142; /* Avalanche red */
+  --chart-2: #60a5fa; /* Light blue */
+  --chart-3: #34d399; /* Light green */
+  --chart-4: #fbbf24; /* Light amber */
+  --chart-5: #a78bfa; /* Light purple */
+  --sidebar: #0f0f0f; /* Dark sidebar */
+  --sidebar-foreground: #ffffff; /* White sidebar text */
+  --sidebar-primary: #e84142; /* Red sidebar primary */
+  --sidebar-primary-foreground: #ffffff; /* White sidebar primary text */
+  --sidebar-accent: #262626; /* Dark sidebar accent */
+  --sidebar-accent-foreground: #ffffff; /* White sidebar accent text */
+  --sidebar-border: #404040; /* Dark sidebar border */
+  --sidebar-ring: rgba(232, 65, 66, 0.5); /* Red sidebar focus ring */
 
-  /* Dark mode futuristic gradients */
-  --gradient-primary: linear-gradient(135deg, oklch(0.45 0.12 195), oklch(0.55 0.12 160));
-  --gradient-secondary: linear-gradient(135deg, oklch(0.55 0.12 160), oklch(0.65 0.15 160));
-  --gradient-accent: linear-gradient(135deg, oklch(0.12 0.02 195), oklch(0.18 0.01 258));
-  --glow-primary: 0 0 30px oklch(0.45 0.12 195 / 0.4);
-  --glow-accent: 0 0 30px oklch(0.55 0.12 160 / 0.4);
+  /* Enhanced dark mode gradients */
+  --gradient-primary: linear-gradient(135deg, #e84142, #f87171);
+  --gradient-secondary: linear-gradient(135deg, #262626, #404040);
+  --gradient-accent: linear-gradient(135deg, #1a1a1a, #262626);
+  --glow-primary: 0 8px 32px rgba(232, 65, 66, 0.3);
+  --glow-accent: 0 8px 32px rgba(232, 65, 66, 0.2);
+  --neon-glow: 0 0 30px rgba(232, 65, 66, 0.4);
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -135,14 +137,17 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
-    /* Added smooth scrolling and enhanced typography */
+    /* Updated to Inter font for professional Avalanche-like appearance */
+    font-family: "Inter", system-ui, sans-serif;
     scroll-behavior: smooth;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    line-height: 1.6;
   }
 
-  /* Added futuristic utility classes */
+  /* Updated utility classes for Avalanche-inspired clean design */
   .gradient-primary {
     background: var(--gradient-primary);
   }
@@ -163,25 +168,30 @@
     box-shadow: var(--glow-accent);
   }
 
+  .neon-glow {
+    box-shadow: var(--neon-glow);
+  }
+
   .glass-effect {
+    /* Updated glass effect for cleaner professional look */
     backdrop-filter: blur(12px);
-    background: oklch(1 0 0 / 0.8);
-    border: 1px solid oklch(0.92 0.01 258 / 0.3);
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(229, 231, 235, 0.5);
   }
 
   .dark .glass-effect {
-    background: oklch(0.08 0.01 258 / 0.8);
-    border: 1px solid oklch(0.18 0.01 258 / 0.3);
+    background: rgba(26, 26, 26, 0.8);
+    border: 1px solid rgba(64, 64, 64, 0.5);
   }
 
-  /* Advanced animation keyframes */
+  /* Refined animations for professional feel */
   @keyframes float {
     0%,
     100% {
       transform: translateY(0px);
     }
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-8px);
     }
   }
 
@@ -204,48 +214,108 @@
     }
   }
 
+  @keyframes subtle-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 4s ease-in-out infinite;
   }
 
   .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+    animation: pulse-glow 3s ease-in-out infinite;
   }
 
   .animate-shimmer {
-    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(232, 65, 66, 0.1), transparent);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
   }
 
-  /* Enhanced interactive elements */
-  .interactive-card {
+  .animate-subtle-pulse {
+    animation: subtle-pulse 2s ease-in-out infinite;
+  }
+
+  /* Professional card styling inspired by Avalanche */
+  .blockchain-card {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-style: preserve-3d;
+    border: 1px solid rgba(229, 231, 235, 0.5);
   }
 
-  .interactive-card:hover {
-    transform: translateY(-8px) rotateX(5deg);
-    box-shadow: var(--glow-primary), 0 20px 40px oklch(0.25 0.08 195 / 0.1);
+  .blockchain-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: rgba(232, 65, 66, 0.3);
   }
 
-  .futuristic-border {
-    position: relative;
-    overflow: hidden;
+  .dark .blockchain-card {
+    border: 1px solid rgba(64, 64, 64, 0.5);
   }
 
-  .futuristic-border::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, oklch(0.55 0.12 160 / 0.6), transparent);
-    transition: left 0.5s;
+  .dark .blockchain-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(232, 65, 66, 0.5);
   }
 
-  .futuristic-border:hover::before {
-    left: 100%;
+  /* Clean typography matching Avalanche style */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Inter", system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Professional button styles inspired by Avalanche */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+
+  .btn-outline {
+    @apply border border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-200;
+  }
+
+  .btn-neon {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  /* Subtle professional patterns */
+  .grid-pattern {
+    background-image: linear-gradient(rgba(229, 231, 235, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(229, 231, 235, 0.5) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .dark .grid-pattern {
+    background-image: linear-gradient(rgba(64, 64, 64, 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(64, 64, 64, 0.3) 1px, transparent 1px);
+  }
+
+  .circuit-pattern {
+    background-image: radial-gradient(circle at 25% 25%, rgba(232, 65, 66, 0.1) 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, rgba(232, 65, 66, 0.05) 2px, transparent 2px);
+    background-size: 80px 80px;
   }
 }

@@ -25,14 +25,6 @@ export function WebVitals() {
             non_interaction: true,
           })
         }
-
-        // Log for debugging in development
-        console.log("[v0] Web Vitals:", {
-          name: metric.name,
-          value: metric.value,
-          rating: metric.rating,
-          delta: metric.delta,
-        })
       }
     }
 

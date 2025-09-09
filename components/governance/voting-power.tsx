@@ -48,11 +48,20 @@ export function VotingPower() {
   }, [])
 
   const handleDelegate = () => {
-    console.log("[v0] Delegating voting power to:", delegateAddress)
+    // TODO: Implement actual delegation API call
+    // await delegateVotingPower(delegateAddress)
+
+    // Update local state to reflect delegation
+    setDelegatedPower((prev) => prev + userVotingPower)
   }
 
   const handleStake = () => {
-    console.log("[v0] Staking BTN for voting power")
+    // TODO: Implement actual staking API call
+    // await stakeBTN(amount)
+
+    // Update local state to reflect staking
+    setStakedAmount((prev) => prev + 1000) // Example increment
+    setUserVotingPower((prev) => prev + 1250) // 1.25x multiplier
   }
 
   return (

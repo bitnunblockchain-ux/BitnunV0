@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { Mail, Phone, MapPin, MessageCircle } from "lucide-react"
+import { Mail, MapPin, MessageCircle } from "lucide-react"
 
 export default function ContactPage() {
   return (
@@ -25,28 +25,28 @@ export default function ContactPage() {
                   <Mail className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold">Email</h3>
-                  <p className="text-slate-300">contact@bitnuneco.com</p>
+                  <h3 className="text-white font-semibold">General Inquiries</h3>
+                  <p className="text-slate-300">contact@bitnun.org</p>
                 </div>
               </div>
 
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                  <Phone className="w-6 h-6 text-white" />
+                  <Mail className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold">Phone</h3>
-                  <p className="text-slate-300">+1 (555) 123-4567</p>
+                  <h3 className="text-white font-semibold">Technical Support</h3>
+                  <p className="text-slate-300">support@bitnun.org</p>
                 </div>
               </div>
 
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-white" />
+                  <Mail className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold">Address</h3>
-                  <p className="text-slate-300">San Francisco, CA</p>
+                  <h3 className="text-white font-semibold">Business & Partnerships</h3>
+                  <p className="text-slate-300">business@bitnun.org</p>
                 </div>
               </div>
 
@@ -55,8 +55,18 @@ export default function ContactPage() {
                   <MessageCircle className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold">Discord</h3>
-                  <p className="text-slate-300">Join our community</p>
+                  <h3 className="text-white font-semibold">AI Assistant</h3>
+                  <p className="text-slate-300">Chat with our AI for instant help</p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">Global Network</h3>
+                  <p className="text-slate-300">Decentralized • Worldwide</p>
                 </div>
               </div>
             </div>
@@ -71,7 +81,7 @@ export default function ContactPage() {
                 <input
                   type="text"
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
-                  placeholder="Your name"
+                  placeholder="Your full name"
                 />
               </div>
 
@@ -80,17 +90,20 @@ export default function ContactPage() {
                 <input
                   type="email"
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
-                  placeholder="your@email.com"
+                  placeholder="your.email@domain.com"
                 />
               </div>
 
               <div>
-                <label className="block text-white font-medium mb-2">Subject</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors"
-                  placeholder="Message subject"
-                />
+                <label className="block text-white font-medium mb-2">Category</label>
+                <select className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors">
+                  <option value="">Select inquiry type</option>
+                  <option value="general">General Question</option>
+                  <option value="technical">Technical Support</option>
+                  <option value="business">Business Inquiry</option>
+                  <option value="partnership">Partnership</option>
+                  <option value="bug">Bug Report</option>
+                </select>
               </div>
 
               <div>
@@ -98,7 +111,7 @@ export default function ContactPage() {
                 <textarea
                   rows={6}
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:border-cyan-400 focus:outline-none transition-colors resize-none"
-                  placeholder="Your message..."
+                  placeholder="Please describe your inquiry in detail..."
                 />
               </div>
 
@@ -109,6 +122,13 @@ export default function ContactPage() {
                 Send Message
               </button>
             </form>
+
+            <div className="mt-6 p-4 bg-slate-800/30 rounded-lg border border-slate-700">
+              <p className="text-slate-400 text-sm text-center">
+                For immediate assistance, try our AI assistant or create a support ticket in your dashboard. We
+                typically respond within 24 hours.
+              </p>
+            </div>
           </div>
         </div>
       </main>

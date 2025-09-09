@@ -50,13 +50,7 @@ export function BridgeInterface() {
   }
 
   const handleBridge = () => {
-    console.log("[v0] Bridging assets:", {
-      fromNetwork,
-      toNetwork,
-      fromToken,
-      toToken,
-      amount,
-    })
+    // Bridge assets logic would go here
   }
 
   return (

@@ -18,32 +18,7 @@ import {
   Cell,
 } from "recharts"
 import { TrendingUp, Users, DollarSign, Activity } from "lucide-react"
-
-// Mock data for analytics
-const mockData = {
-  userGrowth: [
-    { month: "Jan", users: 1200 },
-    { month: "Feb", users: 1900 },
-    { month: "Mar", users: 3000 },
-    { month: "Apr", users: 5000 },
-    { month: "May", users: 7500 },
-    { month: "Jun", users: 10000 },
-  ],
-  revenue: [
-    { month: "Jan", revenue: 15000 },
-    { month: "Feb", revenue: 28000 },
-    { month: "Mar", revenue: 45000 },
-    { month: "Apr", revenue: 72000 },
-    { month: "May", revenue: 95000 },
-    { month: "Jun", revenue: 125000 },
-  ],
-  tokenDistribution: [
-    { name: "Staking", value: 40, color: "#0ea5e9" },
-    { name: "Trading", value: 30, color: "#06b6d4" },
-    { name: "Mining", value: 20, color: "#0891b2" },
-    { name: "Other", value: 10, color: "#0e7490" },
-  ],
-}
+import { createClient } from "@/lib/supabase/client"
 
 export default function AnalyticsContent() {
   const [stats, setStats] = useState({
@@ -52,27 +27,146 @@ export default function AnalyticsContent() {
     activeNodes: 0,
     growthRate: 0,
   })
+  const [userGrowthData, setUserGrowthData] = useState<any[]>([])
+  const [revenueData, setRevenueData] = useState<any[]>([])
+  const [tokenDistribution, setTokenDistribution] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const supabase = createClient()
 
   useEffect(() => {
-    // Simulate loading analytics data
-    const timer = setTimeout(() => {
-      setStats({
-        totalUsers: 10000,
-        totalRevenue: 125000,
-        activeNodes: 250,
-        growthRate: 15.3,
-      })
-    }, 1000)
-
-    return () => clearTimeout(timer)
+    loadRealAnalyticsData()
   }, [])
+
+  const loadRealAnalyticsData = async () => {
+    try {
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("created_at")
+        .order("created_at", { ascending: true })
+
+      const { data: revenueAnalytics } = await supabase
+        .from("revenue_analytics")
+        .select("date, total_revenue, service_category")
+        .eq("period_type", "monthly")
+        .order("date", { ascending: true })
+        .limit(6)
+
+      const { data: platformStats } = await supabase
+        .from("platform_analytics")
+        .select("metric_name, metric_value")
+        .in("metric_name", ["total_users", "daily_active_users", "total_transactions", "defi_tvl"])
+
+      const { data: nodesData } = await supabase.from("blockchain_nodes").select("status").eq("status", "active")
+
+      const { data: stakingData } = await supabase.from("user_stakes").select("amount, pool_id")
+
+      const { data: tradingData } = await supabase.from("orders").select("amount").eq("status", "filled")
+
+      const { data: miningData } = await supabase.from("mining_sessions").select("rewards_earned")
+
+      // Process user growth data
+      if (profilesData) {
+        const monthlyGrowth = processMonthlyGrowth(profilesData)
+        setUserGrowthData(monthlyGrowth)
+      }
+
+      // Process revenue data
+      if (revenueAnalytics) {
+        const monthlyRevenue = revenueAnalytics.map((item) => ({
+          month: new Date(item.date).toLocaleDateString("en-US", { month: "short" }),
+          revenue: item.total_revenue,
+        }))
+        setRevenueData(monthlyRevenue)
+      }
+
+      // Process token distribution
+      const stakingTotal = stakingData?.reduce((sum, stake) => sum + Number.parseFloat(stake.amount), 0) || 0
+      const tradingTotal = tradingData?.reduce((sum, order) => sum + Number.parseFloat(order.amount), 0) || 0
+      const miningTotal = miningData?.reduce((sum, session) => sum + Number.parseFloat(session.rewards_earned), 0) || 0
+      const totalTokens = stakingTotal + tradingTotal + miningTotal
+
+      if (totalTokens > 0) {
+        setTokenDistribution([
+          { name: "Staking", value: (stakingTotal / totalTokens) * 100, color: "#0ea5e9" },
+          { name: "Trading", value: (tradingTotal / totalTokens) * 100, color: "#06b6d4" },
+          { name: "Mining", value: (miningTotal / totalTokens) * 100, color: "#0891b2" },
+          {
+            name: "Other",
+            value: Math.max(0, 100 - ((stakingTotal + tradingTotal + miningTotal) / totalTokens) * 100),
+            color: "#0e7490",
+          },
+        ])
+      }
+
+      // Set platform statistics
+      const statsMap =
+        platformStats?.reduce((acc, stat) => {
+          acc[stat.metric_name] = stat.metric_value
+          return acc
+        }, {} as any) || {}
+
+      setStats({
+        totalUsers: statsMap.total_users || 0,
+        totalRevenue: revenueAnalytics?.reduce((sum, item) => sum + item.total_revenue, 0) || 0,
+        activeNodes: nodesData?.length || 0,
+        growthRate: calculateGrowthRate(profilesData || []),
+      })
+    } catch (error) {
+      console.error("[v0] Error loading analytics data:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const processMonthlyGrowth = (profiles: any[]) => {
+    const monthlyData = profiles.reduce((acc, profile) => {
+      const month = new Date(profile.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+      acc[month] = (acc[month] || 0) + 1
+      return acc
+    }, {} as any)
+
+    return Object.entries(monthlyData)
+      .map(([month, users]) => ({
+        month: month.split(" ")[0],
+        users,
+      }))
+      .slice(-6)
+  }
+
+  const calculateGrowthRate = (profiles: any[]) => {
+    if (profiles.length < 2) return 0
+
+    const now = new Date()
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1)
+
+    const lastMonthUsers = profiles.filter((p) => new Date(p.created_at) >= lastMonth).length
+    const previousMonthUsers = profiles.filter(
+      (p) => new Date(p.created_at) >= twoMonthsAgo && new Date(p.created_at) < lastMonth,
+    ).length
+
+    if (previousMonthUsers === 0) return 100
+    return ((lastMonthUsers - previousMonthUsers) / previousMonthUsers) * 100
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 p-6 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto"></div>
+          <p className="text-cyan-200">Loading real-time analytics...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-white">Analytics Dashboard</h1>
-          <p className="text-cyan-200 text-lg">Comprehensive insights into platform performance and user engagement</p>
+          <p className="text-cyan-200 text-lg">Real-time insights into platform performance and user engagement</p>
         </div>
 
         {/* Key Metrics */}
@@ -84,7 +178,7 @@ export default function AnalyticsContent() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{stats.totalUsers.toLocaleString()}</div>
-              <p className="text-xs text-cyan-300">+{stats.growthRate}% from last month</p>
+              <p className="text-xs text-cyan-300">+{stats.growthRate.toFixed(1)}% from last month</p>
             </CardContent>
           </Card>
 
@@ -95,7 +189,7 @@ export default function AnalyticsContent() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">${stats.totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-cyan-300">+31% from last month</p>
+              <p className="text-xs text-cyan-300">Real-time revenue tracking</p>
             </CardContent>
           </Card>
 
@@ -106,7 +200,7 @@ export default function AnalyticsContent() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{stats.activeNodes}</div>
-              <p className="text-xs text-cyan-300">+12% from last month</p>
+              <p className="text-xs text-cyan-300">Live blockchain nodes</p>
             </CardContent>
           </Card>
 
@@ -116,7 +210,7 @@ export default function AnalyticsContent() {
               <TrendingUp className="h-4 w-4 text-cyan-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{stats.growthRate}%</div>
+              <div className="text-2xl font-bold text-white">{stats.growthRate.toFixed(1)}%</div>
               <p className="text-xs text-cyan-300">Monthly growth rate</p>
             </CardContent>
           </Card>
@@ -140,11 +234,11 @@ export default function AnalyticsContent() {
             <Card className="bg-slate-800/50 border-cyan-500/20">
               <CardHeader>
                 <CardTitle className="text-white">User Growth Over Time</CardTitle>
-                <CardDescription className="text-cyan-200">Monthly active users on the platform</CardDescription>
+                <CardDescription className="text-cyan-200">Real user registrations on the platform</CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={mockData.userGrowth}>
+                  <LineChart data={userGrowthData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                     <XAxis dataKey="month" stroke="#94a3b8" />
                     <YAxis stroke="#94a3b8" />
@@ -167,12 +261,12 @@ export default function AnalyticsContent() {
               <CardHeader>
                 <CardTitle className="text-white">Revenue Growth</CardTitle>
                 <CardDescription className="text-cyan-200">
-                  Monthly revenue generated from platform activities
+                  Actual revenue generated from platform activities
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={mockData.revenue}>
+                  <BarChart data={revenueData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                     <XAxis dataKey="month" stroke="#94a3b8" />
                     <YAxis stroke="#94a3b8" />
@@ -195,23 +289,23 @@ export default function AnalyticsContent() {
               <CardHeader>
                 <CardTitle className="text-white">Token Distribution</CardTitle>
                 <CardDescription className="text-cyan-200">
-                  How tokens are being used across different activities
+                  Real token usage across different platform activities
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
-                      data={mockData.tokenDistribution}
+                      data={tokenDistribution}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) => `${name} ${(percent).toFixed(0)}%`}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
                     >
-                      {mockData.tokenDistribution.map((entry, index) => (
+                      {tokenDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>

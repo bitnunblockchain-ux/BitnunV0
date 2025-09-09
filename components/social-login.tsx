@@ -10,8 +10,6 @@ interface SocialLoginProps {
 
 export function SocialLogin({ onLogin, className = "" }: SocialLoginProps) {
   const handleSocialLogin = (provider: string) => {
-    // Simulate social login - in production, integrate with actual OAuth providers
-    console.log(`[v0] Social login with ${provider}`)
     onLogin?.(provider)
   }
 

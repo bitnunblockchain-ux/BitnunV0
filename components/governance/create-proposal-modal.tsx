@@ -23,14 +23,19 @@ export function CreateProposalModal({ onClose }: CreateProposalModalProps) {
   const [treasuryAmount, setTreasuryAmount] = useState("")
 
   const handleSubmit = () => {
-    console.log("[v0] Creating proposal:", {
+    // TODO: Implement actual proposal creation API call
+    const proposalData = {
       title,
       description,
       category,
-      votingPeriod,
-      requiredMajority,
-      treasuryAmount,
-    })
+      votingPeriod: Number.parseInt(votingPeriod),
+      requiredMajority: Number.parseInt(requiredMajority),
+      treasuryAmount: treasuryAmount ? Number.parseFloat(treasuryAmount) : undefined,
+    }
+
+    // Here would be the API call to create the proposal
+    // await createProposal(proposalData)
+
     onClose()
   }
 

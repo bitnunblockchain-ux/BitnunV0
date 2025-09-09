@@ -28,12 +28,10 @@ export class EnhancedBlockchainNode {
 
   private initializeNode() {
     if (typeof window === "undefined") {
-      console.log("[v0] Server-side environment detected, skipping node initialization")
       return
     }
 
     // Initialize WebAssembly blockchain node
-    console.log(`[v0] Initializing enhanced blockchain node: ${this.nodeId}`)
 
     // Simulate network connection
     setTimeout(() => {
@@ -43,12 +41,10 @@ export class EnhancedBlockchainNode {
 
   setUserId(userId: string) {
     this.userId = userId
-    console.log(`[v0] Blockchain node linked to user: ${userId}`)
   }
 
   setWalletAddress(address: string) {
     this.walletAddress = address
-    console.log(`[v0] Wallet address set: ${address}`)
   }
 
   getNetworkStats() {
@@ -82,8 +78,6 @@ export class EnhancedBlockchainNode {
     this.actionRewards += reward
     this.totalBalance += reward
 
-    console.log(`[v0] Action recorded: ${actionType}, Reward: ${reward.toFixed(4)} BTN`)
-
     return {
       actionType,
       reward,
@@ -111,7 +105,6 @@ export class EnhancedBlockchainNode {
         const blockReward = 1.0 + Math.random() * 0.5
         this.actionRewards += blockReward
         this.totalBalance += blockReward
-        console.log(`[v0] Block mined! Reward: ${blockReward.toFixed(4)} BTN`)
       }
 
       // Update hash rate with realistic fluctuation
@@ -120,14 +113,11 @@ export class EnhancedBlockchainNode {
       // Simulate pending transactions
       this.pendingTransactions = Math.floor(Math.random() * 5) + 1
     }, 2000)
-
-    console.log(`[v0] Mining started on node: ${this.nodeId}`)
   }
 
   stopMining() {
     this.miningActive = false
     this.hashRate = 0
-    console.log(`[v0] Mining stopped on node: ${this.nodeId}`)
   }
 
   async createTransaction(to: string, amount: number, type = "BTN") {
@@ -163,7 +153,6 @@ export class EnhancedBlockchainNode {
   // Advanced blockchain operations
   deploySmartContract(contractCode: string, constructorArgs: any[] = []) {
     const contractAddress = "contract_" + Math.random().toString(36).substr(2, 20)
-    console.log(`[v0] Smart contract deployed at: ${contractAddress}`)
     return {
       address: contractAddress,
       deploymentHash: "deploy_" + Math.random().toString(36).substr(2, 32),
@@ -173,7 +162,6 @@ export class EnhancedBlockchainNode {
 
   callSmartContract(contractAddress: string, method: string, args: any[] = []) {
     const callHash = "call_" + Math.random().toString(36).substr(2, 32)
-    console.log(`[v0] Smart contract call: ${method} on ${contractAddress}`)
     return {
       callHash,
       result: `Method ${method} executed successfully`,
@@ -203,7 +191,6 @@ export class EnhancedBlockchainNode {
       analytics: [],
     }
 
-    console.log(`[v0] Retrieving data from native storage: ${collection}`)
     return mockData[collection] || []
   }
 

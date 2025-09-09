@@ -67,7 +67,6 @@ export function useRealTimeProfile(userId?: string) {
             filter: `id=eq.${userId}`,
           },
           (payload) => {
-            console.log("[v0] Profile update received:", payload)
             if (payload.eventType === "UPDATE" && payload.new) {
               setProfile(payload.new as UserProfile)
             }
@@ -123,7 +122,6 @@ export function useRealTimeMiningStats() {
           .single()
 
         if (error) {
-          console.log("[v0] Mining stats not found, using defaults:", error.message)
           setStats({
             hashRate: 45.2,
             blocksFound: 12,
@@ -135,7 +133,6 @@ export function useRealTimeMiningStats() {
           setStats(data)
         }
       } catch (err) {
-        console.log("[v0] Error fetching mining stats:", err)
         setStats({
           hashRate: 45.2,
           blocksFound: 12,
@@ -158,7 +155,6 @@ export function useRealTimeMiningStats() {
           table: "mining_stats",
         },
         (payload) => {
-          console.log("[v0] Mining stats update received:", payload)
           if (payload.eventType === "INSERT" && payload.new) {
             setStats(payload.new as MiningStats)
           }
@@ -193,7 +189,6 @@ export function useRealTimeActivities(userId?: string) {
         const { data, error } = await query
 
         if (error) {
-          console.log("[v0] Activities not found, using mock data:", error.message)
           const mockActivities = [
             {
               id: "1",
@@ -221,7 +216,6 @@ export function useRealTimeActivities(userId?: string) {
           setActivities(data || [])
         }
       } catch (err) {
-        console.log("[v0] Error fetching activities:", err)
         setActivities([])
       } finally {
         setLoading(false)
@@ -239,7 +233,6 @@ export function useRealTimeActivities(userId?: string) {
           filter: userId ? `user_id=eq.${userId}` : undefined,
         },
         (payload) => {
-          console.log("[v0] Activity update received:", payload)
           if (payload.eventType === "INSERT" && payload.new) {
             setActivities((prev) => [payload.new as any, ...prev.slice(0, 9)])
           }

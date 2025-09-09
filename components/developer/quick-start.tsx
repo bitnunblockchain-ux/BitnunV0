@@ -7,6 +7,7 @@ import { Copy, Check, Terminal, Zap } from "lucide-react"
 
 export function QuickStart() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
+  const [balance, setBalance] = useState<string | null>(null)
 
   const codeExamples = {
     javascript: `// Install BitnunEco SDK
@@ -21,8 +22,9 @@ const client = new BitnunEco({
 });
 
 // Get wallet balance
-const balance = await client.wallet.getBalance('0x...');
-console.log(\`Balance: \${balance} BTN\`);
+client.wallet.getBalance('0x...').then(balance => {
+  setBalance(balance);
+});
 
 // Start mining
 const miningSession = await client.mining.start({
@@ -163,6 +165,14 @@ curl -X POST "https://api.bitnuneco.com/v1/mining/start" \\
             </Button>
           </div>
         </div>
+
+        {/* Display Balance */}
+        {balance && (
+          <div className="bg-muted rounded-lg p-4">
+            <h4 className="font-medium text-foreground">Wallet Balance</h4>
+            <p className="text-sm text-muted-foreground mt-1">Balance: {balance} BTN</p>
+          </div>
+        )}
 
         {/* Popular Use Cases */}
         <div>

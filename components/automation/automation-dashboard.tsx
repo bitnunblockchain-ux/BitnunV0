@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Play, Pause, Settings, TrendingUp, Clock, CheckCircle, XCircle, Zap, Activity, DollarSign } from "lucide-react"
-import type { PaymentWorkflow } from "@/lib/automation/payment-automation"
+import { createClient } from "@/lib/supabase/client"
 
 export function AutomationDashboard() {
-  const [workflows, setWorkflows] = useState<PaymentWorkflow[]>([])
+  const [workflows, setWorkflows] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalWorkflows: 0,
     activeWorkflows: 0,
@@ -16,84 +16,116 @@ export function AutomationDashboard() {
     successRate: 0,
     totalRevenue: 0,
   })
+  const [loading, setLoading] = useState(true)
+
+  const supabase = createClient()
 
   useEffect(() => {
-    loadWorkflows()
-    loadStats()
+    loadRealWorkflows()
+    loadRealStats()
   }, [])
 
-  const loadWorkflows = async () => {
-    // Mock data - in production, load from database
-    const mockWorkflows: PaymentWorkflow[] = [
-      {
-        id: "1",
-        name: "Daily Mining Rewards",
-        type: "scheduled",
-        status: "active",
-        conditions: [{ type: "time", operator: "equals", value: "00:00" }],
-        actions: [{ type: "mint_tokens", parameters: { amount: 100 } }],
-        schedule: "daily",
-        successCount: 847,
-        failureCount: 3,
-        lastRun: new Date(Date.now() - 2 * 60 * 60 * 1000),
-        nextRun: new Date(Date.now() + 22 * 60 * 60 * 1000),
-      },
-      {
-        id: "2",
-        name: "High-Value Transaction Alert",
-        type: "conditional",
-        status: "active",
-        conditions: [{ type: "amount", operator: "greater_than", value: 10000 }],
-        actions: [{ type: "send_notification", parameters: { type: "alert" } }],
-        successCount: 234,
-        failureCount: 1,
-        lastRun: new Date(Date.now() - 30 * 60 * 1000),
-      },
-      {
-        id: "3",
-        name: "Weekly Staking Rewards",
-        type: "scheduled",
-        status: "active",
-        conditions: [],
-        actions: [{ type: "execute_contract", parameters: { contractId: "staking-rewards" } }],
-        schedule: "weekly",
-        successCount: 52,
-        failureCount: 0,
-        lastRun: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-        nextRun: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
-      },
-      {
-        id: "4",
-        name: "Failed Payment Retry",
-        type: "trigger-based",
-        status: "paused",
-        conditions: [{ type: "user_type", operator: "equals", value: "premium" }],
-        actions: [{ type: "send_payment", parameters: { retry: true } }],
-        successCount: 156,
-        failureCount: 12,
-      },
-    ]
-    setWorkflows(mockWorkflows)
+  const loadRealWorkflows = async () => {
+    try {
+      const { data: botConfigs, error } = await supabase
+        .from("bot_configs")
+        .select(`
+          *,
+          bot_logs (
+            id,
+            status,
+            executed_at,
+            execution_time_ms
+          )
+        `)
+        .order("created_at", { ascending: false })
+
+      if (error) {
+        console.error("[v0] Error loading workflows:", error)
+        return
+      }
+
+      const processedWorkflows =
+        botConfigs?.map((bot) => {
+          const logs = bot.bot_logs || []
+          const successCount = logs.filter((log: any) => log.status === "success").length
+          const failureCount = logs.filter((log: any) => log.status === "error").length
+          const lastLog = logs[0]
+
+          return {
+            id: bot.id,
+            name: bot.name,
+            type: bot.bot_type,
+            status: bot.is_active ? "active" : "paused",
+            conditions: bot.conditions || [],
+            actions: bot.actions || [],
+            schedule: bot.schedule,
+            successCount,
+            failureCount,
+            lastRun: lastLog ? new Date(lastLog.executed_at) : null,
+            nextRun: bot.next_run ? new Date(bot.next_run) : null,
+          }
+        }) || []
+
+      setWorkflows(processedWorkflows)
+    } catch (error) {
+      console.error("[v0] Error loading workflows:", error)
+    }
   }
 
-  const loadStats = () => {
-    setStats({
-      totalWorkflows: 24,
-      activeWorkflows: 18,
-      totalExecutions: 15847,
-      successRate: 99.2,
-      totalRevenue: 2847293,
-    })
+  const loadRealStats = async () => {
+    try {
+      const { data: totalBots } = await supabase.from("bot_configs").select("id, is_active")
+
+      const { data: botLogs } = await supabase.from("bot_logs").select("status, revenue_generated")
+
+      const { data: revenueData } = await supabase
+        .from("revenue_transactions")
+        .select("net_amount")
+        .eq("service_category", "automation")
+
+      const totalWorkflows = totalBots?.length || 0
+      const activeWorkflows = totalBots?.filter((bot) => bot.is_active).length || 0
+      const totalExecutions = botLogs?.length || 0
+      const successfulExecutions = botLogs?.filter((log) => log.status === "success").length || 0
+      const successRate = totalExecutions > 0 ? (successfulExecutions / totalExecutions) * 100 : 0
+      const totalRevenue =
+        revenueData?.reduce((sum, transaction) => sum + Number.parseFloat(transaction.net_amount), 0) || 0
+
+      setStats({
+        totalWorkflows,
+        activeWorkflows,
+        totalExecutions,
+        successRate: Number.parseFloat(successRate.toFixed(1)),
+        totalRevenue: Number.parseFloat(totalRevenue.toFixed(2)),
+      })
+    } catch (error) {
+      console.error("[v0] Error loading stats:", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const toggleWorkflow = async (workflowId: string) => {
-    setWorkflows((prev) =>
-      prev.map((workflow) =>
-        workflow.id === workflowId
-          ? { ...workflow, status: workflow.status === "active" ? "paused" : "active" }
-          : workflow,
-      ),
-    )
+    try {
+      const workflow = workflows.find((w) => w.id === workflowId)
+      const newStatus = workflow?.status === "active" ? false : true
+
+      const { error } = await supabase.from("bot_configs").update({ is_active: newStatus }).eq("id", workflowId)
+
+      if (error) {
+        console.error("[v0] Error updating workflow:", error)
+        return
+      }
+
+      setWorkflows((prev) =>
+        prev.map((workflow) =>
+          workflow.id === workflowId ? { ...workflow, status: newStatus ? "active" : "paused" } : workflow,
+        ),
+      )
+    } catch (error) {
+      console.error("[v0] Error toggling workflow:", error)
+    }
   }
 
   const getStatusColor = (status: string) => {
@@ -122,6 +154,17 @@ export function AutomationDashboard() {
       default:
         return <Settings className="h-4 w-4" />
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400 mx-auto"></div>
+          <p className="text-cyan-200 mt-2">Loading real automation data...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

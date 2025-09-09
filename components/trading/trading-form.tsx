@@ -25,8 +25,7 @@ export function TradingForm({ selectedPair, orderType, onOrderTypeChange }: Trad
   const balance = orderType === "buy" ? 1250.5 : 5000.25
 
   const handleSubmitOrder = () => {
-    // Real order submission logic would go here
-    console.log("[v0] Submitting order:", { orderType, orderMode, amount, price, total })
+    // TODO: Implement actual order submission logic with proper validation
   }
 
   return (

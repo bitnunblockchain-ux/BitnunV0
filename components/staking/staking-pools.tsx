@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Lock, Clock, TrendingUp, Zap } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 interface StakingPool {
   id: string
@@ -24,72 +25,66 @@ interface StakingPool {
 
 export function StakingPools() {
   const [pools, setPools] = useState<StakingPool[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
 
   useEffect(() => {
-    const mockPools: StakingPool[] = [
-      {
-        id: "1",
-        name: "Flexible BTN Staking",
-        token: "BTN",
-        apr: 12.5,
-        lockPeriod: 0,
-        minStake: 100,
-        maxStake: 100000,
-        totalStaked: 2500000,
-        poolCap: 5000000,
-        rewards: ["BTN"],
-        status: "active",
-        multiplier: 1.0,
-      },
-      {
-        id: "2",
-        name: "30-Day BTN Lock",
-        token: "BTN",
-        apr: 25.8,
-        lockPeriod: 30,
-        minStake: 500,
-        maxStake: 500000,
-        totalStaked: 1800000,
-        poolCap: 3000000,
-        rewards: ["BTN", "ECO"],
-        status: "active",
-        multiplier: 1.5,
-      },
-      {
-        id: "3",
-        name: "90-Day BTN Lock",
-        token: "BTN",
-        apr: 45.2,
-        lockPeriod: 90,
-        minStake: 1000,
-        maxStake: 1000000,
-        totalStaked: 950000,
-        poolCap: 2000000,
-        rewards: ["BTN", "ECO", "BONUS"],
-        status: "active",
-        multiplier: 2.5,
-      },
-      {
-        id: "4",
-        name: "365-Day BTN Lock",
-        token: "BTN",
-        apr: 85.7,
-        lockPeriod: 365,
-        minStake: 5000,
-        maxStake: 2000000,
-        totalStaked: 1200000,
-        poolCap: 1500000,
-        rewards: ["BTN", "ECO", "BONUS", "NFT"],
-        status: "active",
-        multiplier: 5.0,
-      },
-    ]
+    const fetchStakingPools = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("btn_staking_pools")
+          .select("*")
+          .eq("is_active", true)
+          .order("apr", { ascending: false })
 
-    setPools(mockPools)
-  }, [])
+        if (error) throw error
 
-  const handleStake = (poolId: string) => {
-    console.log("[v0] Staking in pool:", poolId)
+        const transformedPools: StakingPool[] =
+          data?.map((pool) => ({
+            id: pool.id,
+            name: pool.pool_name,
+            token: "BTN",
+            apr: pool.apr,
+            lockPeriod: pool.lock_period || 0,
+            minStake: pool.min_stake,
+            maxStake: pool.max_stake || 1000000,
+            totalStaked: pool.total_staked,
+            poolCap: pool.max_stake || 5000000,
+            rewards: pool.pool_type === "flexible" ? ["BTN"] : ["BTN", "ECO"],
+            status: pool.total_staked >= (pool.max_stake || 5000000) ? "full" : "active",
+            multiplier: pool.lock_period ? pool.lock_period / 30 : 1.0,
+          })) || []
+
+        setPools(transformedPools)
+      } catch (error) {
+        console.error("Error fetching staking pools:", error)
+        setPools([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStakingPools()
+  }, [supabase])
+
+  const handleStake = async (poolId: string) => {
+    try {
+      // Placeholder for actual staking logic
+    } catch (error) {
+      console.error("Staking error:", error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="p-6 animate-pulse bg-white/80 dark:bg-gray-800/80">
+            <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          </Card>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -100,7 +95,6 @@ export function StakingPools() {
           className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-emerald-200 dark:border-emerald-800"
         >
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            {/* Pool Info */}
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
@@ -129,7 +123,6 @@ export function StakingPools() {
               </div>
             </div>
 
-            {/* Pool Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-300">APR</p>
@@ -158,7 +151,6 @@ export function StakingPools() {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => handleStake(pool.id)}
@@ -170,7 +162,6 @@ export function StakingPools() {
             </div>
           </div>
 
-          {/* Pool Progress */}
           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-gray-600 dark:text-gray-300">Pool Capacity</span>

@@ -42,7 +42,6 @@ export class BotManager {
 
   setUserId(userId: string) {
     this.userId = userId
-    console.log(`[v0] Bot Manager initialized for user: ${userId}`)
   }
 
   private async initializeBots() {
@@ -55,8 +54,6 @@ export class BotManager {
     await this.createSecurityBot()
     await this.createEngagementBot()
     await this.createContentModerationBot()
-
-    console.log(`[v0] Initialized ${this.bots.size} automation bots`)
   }
 
   private async createMiningBot() {
@@ -282,7 +279,7 @@ export class BotManager {
           bot.lastRun = new Date()
           bot.nextRun = new Date(Date.now() + interval)
         } catch (error) {
-          console.error(`[v0] Bot ${botId} execution failed:`, error)
+          console.error(`Bot ${botId} execution failed:`, error)
           bot.stats.totalRuns++
           bot.stats.failedRuns++
         }
@@ -295,8 +292,6 @@ export class BotManager {
   private async executeMiningBot() {
     if (typeof window === "undefined") return
 
-    console.log("[v0] Mining Bot: Optimizing mining operations...")
-
     const node = await getBlockchainNode()
     if (!node) return
 
@@ -304,13 +299,11 @@ export class BotManager {
     const stats = node.getNetworkStats()
     if (!stats.miningActive) {
       node.startMining()
-      console.log("[v0] Mining Bot: Auto-started mining")
     }
 
     // Optimize hash rate
     if (stats.hashRate < 2.0) {
       // Simulate hash rate optimization
-      console.log("[v0] Mining Bot: Optimizing hash rate...")
     }
 
     // Record bot action for rewards
@@ -325,8 +318,6 @@ export class BotManager {
   private async executeTradingBot() {
     if (typeof window === "undefined") return
 
-    console.log("[v0] Trading Bot: Analyzing market opportunities...")
-
     const node = await getBlockchainNode()
     if (!node) return
 
@@ -340,7 +331,6 @@ export class BotManager {
     for (const opportunity of tradingOpportunities) {
       if (opportunity.profit > 0.02) {
         // 2% profit threshold
-        console.log(`[v0] Trading Bot: Executing ${opportunity.action} for ${opportunity.pair}`)
 
         // Record trading action
         if (this.userId) {
@@ -358,8 +348,6 @@ export class BotManager {
   private async executeNFTBot() {
     if (typeof window === "undefined") return
 
-    console.log("[v0] NFT Bot: Managing NFT marketplace operations...")
-
     const node = await getBlockchainNode()
     if (!node) return
 
@@ -367,7 +355,7 @@ export class BotManager {
     const nftOperations = ["price_optimization", "rarity_analysis", "floor_price_monitoring", "auto_listing"]
 
     const operation = nftOperations[Math.floor(Math.random() * nftOperations.length)]
-    console.log(`[v0] NFT Bot: Executing ${operation}`)
+    console.log(`Executing ${operation}`)
 
     // Record NFT bot action
     if (this.userId) {
@@ -381,8 +369,6 @@ export class BotManager {
   private async executeSocialBot() {
     if (typeof window === "undefined") return
 
-    console.log("[v0] Social Bot: Managing social engagement...")
-
     const node = await getBlockchainNode()
     if (!node) return
 
@@ -390,7 +376,7 @@ export class BotManager {
     const socialActions = ["auto_like_posts", "generate_content", "follow_users", "share_content"]
 
     const action = socialActions[Math.floor(Math.random() * socialActions.length)]
-    console.log(`[v0] Social Bot: Executing ${action}`)
+    console.log(`Executing ${action}`)
 
     // Record social bot action
     if (this.userId) {
@@ -403,8 +389,6 @@ export class BotManager {
 
   private async executeAnalyticsBot() {
     if (typeof window === "undefined") return
-
-    console.log("[v0] Analytics Bot: Collecting and analyzing data...")
 
     const node = await getBlockchainNode()
     if (!node) return
@@ -423,13 +407,11 @@ export class BotManager {
       })
     }
 
-    console.log("[v0] Analytics Bot: Data collection completed")
+    console.log("Data collection completed")
   }
 
   private async executeSecurityBot() {
     if (typeof window === "undefined") return
-
-    console.log("[v0] Security Bot: Monitoring for threats and anomalies...")
 
     const node = await getBlockchainNode()
     if (!node) return
@@ -438,7 +420,7 @@ export class BotManager {
     const securityChecks = ["fraud_detection", "anomaly_detection", "threat_monitoring", "wallet_security_check"]
 
     const check = securityChecks[Math.floor(Math.random() * securityChecks.length)]
-    console.log(`[v0] Security Bot: Executing ${check}`)
+    console.log(`Executing ${check}`)
 
     // Record security action
     if (this.userId) {
@@ -453,8 +435,6 @@ export class BotManager {
   private async executeEngagementBot() {
     if (typeof window === "undefined") return
 
-    console.log("[v0] Engagement Bot: Enhancing user engagement...")
-
     const node = await getBlockchainNode()
     if (!node) return
 
@@ -467,7 +447,7 @@ export class BotManager {
     ]
 
     const action = engagementActions[Math.floor(Math.random() * engagementActions.length)]
-    console.log(`[v0] Engagement Bot: Executing ${action}`)
+    console.log(`Executing ${action}`)
 
     // Record engagement action
     if (this.userId) {
@@ -481,8 +461,6 @@ export class BotManager {
   private async executeModerationBot() {
     if (typeof window === "undefined") return
 
-    console.log("[v0] Moderation Bot: Monitoring content quality...")
-
     const node = await getBlockchainNode()
     if (!node) return
 
@@ -490,7 +468,7 @@ export class BotManager {
     const moderationTasks = ["spam_detection", "toxicity_filtering", "image_analysis", "content_quality_check"]
 
     const task = moderationTasks[Math.floor(Math.random() * moderationTasks.length)]
-    console.log(`[v0] Moderation Bot: Executing ${task}`)
+    console.log(`Executing ${task}`)
 
     // Record moderation action
     if (this.userId) {
@@ -506,7 +484,6 @@ export class BotManager {
     const bot = this.bots.get(botId)
     if (bot) {
       bot.status = "active"
-      console.log(`[v0] Bot ${botId} started`)
     }
   }
 
@@ -514,7 +491,6 @@ export class BotManager {
     const bot = this.bots.get(botId)
     if (bot) {
       bot.status = "inactive"
-      console.log(`[v0] Bot ${botId} stopped`)
     }
   }
 
@@ -522,7 +498,6 @@ export class BotManager {
     const bot = this.bots.get(botId)
     if (bot) {
       bot.status = "paused"
-      console.log(`[v0] Bot ${botId} paused`)
     }
   }
 
@@ -538,7 +513,6 @@ export class BotManager {
     const bot = this.bots.get(botId)
     if (bot) {
       bot.config = { ...bot.config, ...config }
-      console.log(`[v0] Bot ${botId} configuration updated`)
     }
   }
 
@@ -570,7 +544,6 @@ export class BotManager {
       clearInterval(intervalId)
     }
     this.intervals.clear()
-    console.log("[v0] Bot Manager shutdown completed")
   }
 }
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Vote, Clock, CheckCircle, XCircle, Users, MessageSquare } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 interface Proposal {
   id: string
@@ -25,62 +26,72 @@ interface Proposal {
 export function ProposalsList() {
   const [proposals, setProposals] = useState<Proposal[]>([])
   const [filter, setFilter] = useState<"all" | "active" | "passed" | "rejected">("all")
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
 
   useEffect(() => {
-    const mockProposals: Proposal[] = [
-      {
-        id: "1",
-        title: "Increase Mining Rewards for Eco-Actions",
-        description:
-          "Proposal to increase mining rewards by 25% for verified eco-friendly actions to incentivize sustainable behavior.",
-        proposer: "0x1234...5678",
-        status: "active",
-        votesFor: 1250000,
-        votesAgainst: 340000,
-        totalVotes: 1590000,
-        quorum: 1000000,
-        endTime: "2024-01-20T18:00:00Z",
-        category: "Tokenomics",
-        requiredMajority: 60,
-      },
-      {
-        id: "2",
-        title: "Launch Carbon Credit NFT Marketplace",
-        description:
-          "Establish a dedicated marketplace for carbon credit NFTs with verified environmental impact tracking.",
-        proposer: "0x9876...4321",
-        status: "active",
-        votesFor: 890000,
-        votesAgainst: 120000,
-        totalVotes: 1010000,
-        quorum: 800000,
-        endTime: "2024-01-18T12:00:00Z",
-        category: "Platform",
-        requiredMajority: 50,
-      },
-      {
-        id: "3",
-        title: "Treasury Allocation for Green Energy Partnerships",
-        description: "Allocate 2M BTN from treasury to fund partnerships with renewable energy providers.",
-        proposer: "0x5555...7777",
-        status: "passed",
-        votesFor: 2100000,
-        votesAgainst: 450000,
-        totalVotes: 2550000,
-        quorum: 1500000,
-        endTime: "2024-01-15T09:00:00Z",
-        category: "Treasury",
-        requiredMajority: 66,
-      },
-    ]
+    const fetchProposals = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("btn_governance_proposals")
+          .select("*")
+          .order("created_at", { ascending: false })
 
-    setProposals(mockProposals)
-  }, [])
+        if (error) throw error
+
+        const transformedProposals: Proposal[] =
+          data?.map((proposal) => ({
+            id: proposal.id,
+            title: proposal.title,
+            description: proposal.description,
+            proposer: proposal.proposer_id,
+            status: proposal.status,
+            votesFor: proposal.votes_for || 0,
+            votesAgainst: proposal.votes_against || 0,
+            totalVotes: (proposal.votes_for || 0) + (proposal.votes_against || 0) + (proposal.votes_abstain || 0),
+            quorum: proposal.voting_power_required || 1000000,
+            endTime: proposal.voting_end,
+            category: proposal.proposal_type,
+            requiredMajority: 60,
+          })) || []
+
+        setProposals(transformedProposals)
+      } catch (error) {
+        console.error("Error fetching proposals:", error)
+        setProposals([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProposals()
+  }, [supabase])
 
   const filteredProposals = proposals.filter((proposal) => filter === "all" || proposal.status === filter)
 
-  const handleVote = (proposalId: string, support: boolean) => {
-    console.log("[v0] Voting on proposal:", proposalId, "Support:", support)
+  const handleVote = async (proposalId: string, support: boolean) => {
+    try {
+      const choice = support ? "for" : "against"
+      // This would integrate with the BTN token processor for actual voting
+      // await btnTokenProcessor.vote(proposalId, choice)
+
+      // Update local state optimistically
+      setProposals((prev) =>
+        prev.map((proposal) => {
+          if (proposal.id === proposalId) {
+            return {
+              ...proposal,
+              votesFor: support ? proposal.votesFor + 1000 : proposal.votesFor,
+              votesAgainst: !support ? proposal.votesAgainst + 1000 : proposal.votesAgainst,
+              totalVotes: proposal.totalVotes + 1000,
+            }
+          }
+          return proposal
+        }),
+      )
+    } catch (error) {
+      console.error("Voting error:", error)
+    }
   }
 
   const getStatusIcon = (status: string) => {
@@ -180,14 +191,11 @@ export function ProposalsList() {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-300">Voting Progress</span>
                     <span className="text-sm font-medium">
-                      {((proposal.votesFor / (proposal.votesFor + proposal.votesAgainst)) * 100).toFixed(1)}% For
+                      {((proposal.votesFor / proposal.totalVotes) * 100).toFixed(1)}% For
                     </span>
                   </div>
 
-                  <Progress
-                    value={(proposal.votesFor / (proposal.votesFor + proposal.votesAgainst)) * 100}
-                    className="h-2"
-                  />
+                  <Progress value={(proposal.votesFor / proposal.totalVotes) * 100} className="h-2" />
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>

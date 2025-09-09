@@ -17,7 +17,7 @@ export class P2PNetwork {
       // For now, simulate WebSocket connection
       this.simulateConnection()
     } catch (error) {
-      console.error("[v0] P2P connection failed:", error)
+      console.error("P2P connection failed:", error)
       this.handleReconnect()
     }
   }
@@ -27,7 +27,6 @@ export class P2PNetwork {
     setTimeout(() => {
       this.isConnected = true
       this.reconnectAttempts = 0
-      console.log(`[v0] P2P Network connected for node ${this.nodeId}`)
 
       // Simulate peer discovery
       this.discoverPeers()
@@ -45,8 +44,6 @@ export class P2PNetwork {
       const peerId = `peer_${Date.now()}_${i}`
       this.peers.set(peerId, null as any) // Simulate peer connection
     }
-
-    console.log(`[v0] Discovered ${peerCount} peers`)
   }
 
   private startHeartbeat() {
@@ -66,13 +63,11 @@ export class P2PNetwork {
       this.reconnectAttempts++
       const delay = Math.pow(2, this.reconnectAttempts) * 1000 // Exponential backoff
 
-      console.log(`[v0] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`)
-
       setTimeout(() => {
         this.connect()
       }, delay)
     } else {
-      console.error("[v0] Max reconnection attempts reached")
+      console.error("Max reconnection attempts reached")
     }
   }
 
@@ -87,9 +82,7 @@ export class P2PNetwork {
     }
 
     // Simulate broadcasting to all peers
-    this.peers.forEach((peer, peerId) => {
-      console.log(`[v0] Broadcasting ${type} to ${peerId}:`, data)
-    })
+    this.peers.forEach((peer, peerId) => {})
   }
 
   public sendToPeer(peerId: string, type: string, data: any) {
@@ -102,8 +95,6 @@ export class P2PNetwork {
       to: peerId,
       timestamp: Date.now(),
     }
-
-    console.log(`[v0] Sending ${type} to peer ${peerId}:`, data)
   }
 
   public getNetworkStats() {
@@ -123,7 +114,5 @@ export class P2PNetwork {
       this.ws.close()
       this.ws = null
     }
-
-    console.log(`[v0] P2P Network disconnected for node ${this.nodeId}`)
   }
 }
