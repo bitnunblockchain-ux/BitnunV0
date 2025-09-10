@@ -98,90 +98,99 @@ export function DashboardStats() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {stats.map((stat, index) => (
-          <Card
-            key={index}
-            className={`
-              glass-effect futuristic-border group cursor-pointer
-              hover:scale-105 transition-all duration-300 ease-out
-              hover:shadow-2xl hover:${stat.glow}
-              animate-float
-            `}
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
-                {stat.title}
-              </CardTitle>
-              <div
-                className={`
-                p-2 rounded-lg bg-gradient-to-br ${stat.gradient} 
-                group-hover:scale-110 transition-transform duration-300
-                shadow-lg group-hover:shadow-xl
+        {stats.map((stat, index) => {
+          const progressWidth = stat.loading
+            ? "50%"
+            : Math.min(100, (Number.parseFloat(stat.change.replace(/[^0-9.]/g, "")) || 0) * 5) + "%"
+
+          const animationDelay = index * 0.1 + "s"
+          const progressAnimationDelay = index * 0.2 + "s"
+
+          return (
+            <Card
+              key={index}
+              className={`
+                glass-effect futuristic-border group cursor-pointer
+                hover:scale-105 transition-all duration-300 ease-out
+                hover:shadow-2xl hover:${stat.glow}
+                animate-float
               `}
-              >
-                <stat.icon className="h-4 w-4 text-white" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {stat.loading ? (
-                <div className="animate-pulse">
-                  <div className="h-8 bg-slate-700 rounded w-20 mb-2"></div>
-                  <div className="h-4 bg-slate-700 rounded w-16"></div>
-                </div>
-              ) : (
-                <>
-                  <div
-                    className={`
-                    text-3xl font-bold bg-gradient-to-r ${stat.gradient} 
-                    bg-clip-text text-transparent group-hover:scale-105 
-                    transition-transform duration-300 inline-block
-                  `}
-                  >
-                    {stat.value}
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-                      {stat.description}
-                    </p>
-                    <Badge
-                      variant={stat.changeType === "positive" ? "default" : "destructive"}
-                      className={`
-                        text-xs font-semibold px-2 py-1 rounded-full
-                        ${
-                          stat.changeType === "positive"
-                            ? `bg-gradient-to-r ${stat.gradient} text-white shadow-lg hover:shadow-xl`
-                            : "bg-destructive text-destructive-foreground"
-                        }
-                        group-hover:scale-110 transition-all duration-300
-                      `}
-                    >
-                      {stat.change}
-                    </Badge>
-                  </div>
-                </>
-              )}
-
-              <div className="w-full bg-muted rounded-full h-1 overflow-hidden">
+              style={{ animationDelay }}
+            >
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
+                  {stat.title}
+                </CardTitle>
                 <div
                   className={`
-                    h-full bg-gradient-to-r ${stat.gradient} rounded-full
-                    animate-shimmer bg-[length:200%_100%]
-                    group-hover:animate-pulse
-                  `}
-                  style={{
-                    width: stat.loading
-                      ? "50%"
-                      : `${Math.min(100, (Number.parseFloat(stat.change.replace(/[^0-9.]/g, "")) || 0) * 5)}%`,
-                    animationDelay: `${index * 0.2}s`,
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                  p-2 rounded-lg bg-gradient-to-br ${stat.gradient} 
+                  group-hover:scale-110 transition-transform duration-300
+                  shadow-lg group-hover:shadow-xl
+                `}
+                >
+                  <stat.icon className="h-4 w-4 text-white" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {stat.loading ? (
+                  <div className="animate-pulse">
+                    <div className="h-8 bg-slate-700 rounded w-20 mb-2"></div>
+                    <div className="h-4 bg-slate-700 rounded w-16"></div>
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      className={`
+                      text-3xl font-bold bg-gradient-to-r ${stat.gradient} 
+                      bg-clip-text text-transparent group-hover:scale-105 
+                      transition-transform duration-300 inline-block
+                    `}
+                    >
+                      {stat.value}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+                        {stat.description}
+                      </p>
+                      <Badge
+                        variant={stat.changeType === "positive" ? "default" : "destructive"}
+                        className={`
+                          text-xs font-semibold px-2 py-1 rounded-full
+                          ${
+                            stat.changeType === "positive"
+                              ? `bg-gradient-to-r ${stat.gradient} text-white shadow-lg hover:shadow-xl`
+                              : "bg-destructive text-destructive-foreground"
+                          }
+                          group-hover:scale-110 transition-all duration-300
+                        `}
+                      >
+                        {stat.change}
+                      </Badge>
+                    </div>
+                  </>
+                )}
+
+                <div className="w-full bg-muted rounded-full h-1 overflow-hidden">
+                  <div
+                    className={`
+                      h-full bg-gradient-to-r ${stat.gradient} rounded-full
+                      animate-shimmer bg-[length:200%_100%]
+                      group-hover:animate-pulse
+                    `}
+                    style={{
+                      width: progressWidth,
+                      animationDelay: progressAnimationDelay,
+                    }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
     </div>
   )
 }
+
+export default DashboardStats
