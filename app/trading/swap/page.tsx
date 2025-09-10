@@ -37,6 +37,7 @@ export default function SwapPage() {
 
         {showTokenSelector && (
           <TokenSelector
+            isOpen={!!showTokenSelector}
             onSelect={(token) => {
               if (showTokenSelector === "from") {
                 setFromToken(token)
