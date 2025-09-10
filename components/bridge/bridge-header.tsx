@@ -27,7 +27,7 @@ export function BridgeHeader({ activeTab, onTabChange }: BridgeHeaderProps) {
       </div>
 
       <div className="flex items-center gap-4">
-        <Tabs value={activeTab} onValueChange={onTabChange}>
+        <Tabs value={activeTab} onValueChange={(value) => onTabChange(value as "bridge" | "history" | "networks")}>
           <TabsList>
             <TabsTrigger value="bridge">
               <Bridge className="w-4 h-4 mr-2" />
