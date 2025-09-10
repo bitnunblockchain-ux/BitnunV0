@@ -153,12 +153,16 @@ export default function PortfolioPage() {
       // Add liquidity positions
       if (liquidityPositions) {
         liquidityPositions.forEach((position) => {
+          const liquidityPool = Array.isArray(position.liquidity_pools)
+            ? position.liquidity_pools[0]
+            : position.liquidity_pools
+
           processedPositions.push({
             id: position.id,
             type: "liquidity",
-            asset: `${position.liquidity_pools?.token_a}/${position.liquidity_pools?.token_b}`,
+            asset: `${liquidityPool?.token_a}/${liquidityPool?.token_b}`,
             amount: Number.parseFloat(position.amount_a) + Number.parseFloat(position.amount_b),
-            apy: position.liquidity_pools?.apr || 0,
+            apy: liquidityPool?.apr || 0,
             earned: Number.parseFloat(position.rewards_earned || "0"),
             platform: "BitnunEco DEX",
           })
