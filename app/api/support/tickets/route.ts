@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category")
     const priority = searchParams.get("priority")
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     let query = supabase
       .from("support_tickets")
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { subject, description, category, priority, user_id } = await request.json()
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Create ticket
     const { data: ticket, error } = await supabase
