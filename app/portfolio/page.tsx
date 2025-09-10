@@ -136,14 +136,16 @@ export default function PortfolioPage() {
       // Add staking positions
       if (stakingPositions) {
         stakingPositions.forEach((stake) => {
+          const stakingPool = Array.isArray(stake.staking_pools) ? stake.staking_pools[0] : stake.staking_pools
+
           processedPositions.push({
             id: stake.id,
             type: "staking",
-            asset: stake.staking_pools?.token_symbol || "Unknown",
+            asset: stakingPool?.token_symbol || "Unknown",
             amount: Number.parseFloat(stake.amount),
-            apy: stake.staking_pools?.apr || 0,
+            apy: stakingPool?.apr || 0,
             earned: Number.parseFloat(stake.rewards_earned || "0"),
-            platform: stake.staking_pools?.pool_name || "BitnunEco Staking",
+            platform: stakingPool?.pool_name || "BitnunEco Staking",
           })
         })
       }
