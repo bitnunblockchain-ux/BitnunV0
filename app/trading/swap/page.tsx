@@ -40,9 +40,9 @@ export default function SwapPage() {
             isOpen={!!showTokenSelector}
             onSelect={(token) => {
               if (showTokenSelector === "from") {
-                setFromToken(token)
+                setFromToken(token.symbol)
               } else {
-                setToToken(token)
+                setToToken(token.symbol)
               }
               setShowTokenSelector(null)
             }}
