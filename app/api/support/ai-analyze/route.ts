@@ -128,7 +128,7 @@ function generateSuggestedResponse(subject: string, description: string): string
       "Thank you for contacting BitnunEco support. We've received your inquiry and will respond within 24 hours.",
   }
 
-  return responses[category] || responses.general
+  return responses[category as keyof typeof responses] || responses.general
 }
 
 function needsEscalation(subject: string, description: string): boolean {
