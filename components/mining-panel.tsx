@@ -233,3 +233,5 @@ export function MiningPanel() {
     </Card>
   )
 }
+
+export default MiningPanel
