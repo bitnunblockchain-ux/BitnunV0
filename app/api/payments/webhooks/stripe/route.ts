@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-06-20",
+  apiVersion: "2025-08-27.basil",
 })
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const signature = request.headers.get("stripe-signature")!
 
     const event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    const supabase = createClient()
+    const supabase = await createClient()
 
     switch (event.type) {
       case "payment_intent.succeeded":
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function creditUserAccount(userId: string, amount: number) {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   // Add to user's USD balance
   await supabase.rpc("update_user_balance", {
