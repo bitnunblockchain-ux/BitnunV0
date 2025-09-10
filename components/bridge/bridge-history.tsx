@@ -126,7 +126,10 @@ export function BridgeHistory() {
             />
           </div>
 
-          <Select value={filter} onValueChange={setFilter}>
+          <Select
+            value={filter}
+            onValueChange={(value) => setFilter(value as "all" | "completed" | "pending" | "failed")}
+          >
             <SelectTrigger className="w-full sm:w-48">
               <SelectValue />
             </SelectTrigger>
