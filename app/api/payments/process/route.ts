@@ -96,7 +96,7 @@ async function processSubscription(
         message: "Subscription activated successfully",
       })
     } else {
-      return NextResponse.json({ error: paymentResult.error }, { status: 400 })
+      return NextResponse.json({ error: paymentResult.message }, { status: 400 })
     }
   } catch (error: any) {
     console.error("Custom payment error:", error)
