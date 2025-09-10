@@ -2,9 +2,16 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { TrendingUp, Coins, Clock, Users } from "lucide-react"
+import type { Dispatch, SetStateAction } from "react"
 
-export function StakingHeader() {
+interface StakingHeaderProps {
+  activeTab: "pools" | "mystakes"
+  onTabChange: Dispatch<SetStateAction<"pools" | "mystakes">>
+}
+
+export function StakingHeader({ activeTab, onTabChange }: StakingHeaderProps) {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-4">
@@ -14,6 +21,31 @@ export function StakingHeader() {
         <p className="text-xl text-gray-400 max-w-2xl mx-auto">
           Stake your BTN tokens and earn rewards while securing the BitnunEco network
         </p>
+
+        <div className="flex justify-center gap-2">
+          <Button
+            variant={activeTab === "pools" ? "default" : "outline"}
+            onClick={() => onTabChange("pools")}
+            className={
+              activeTab === "pools"
+                ? "bg-emerald-500 hover:bg-emerald-600"
+                : "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+            }
+          >
+            Staking Pools
+          </Button>
+          <Button
+            variant={activeTab === "mystakes" ? "default" : "outline"}
+            onClick={() => onTabChange("mystakes")}
+            className={
+              activeTab === "mystakes"
+                ? "bg-emerald-500 hover:bg-emerald-600"
+                : "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+            }
+          >
+            My Stakes
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
