@@ -16,7 +16,7 @@ const TicketAnalysisSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const { subject, description, user_context } = await request.json()
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Get relevant knowledge base articles
     const { data: kbArticles } = await supabase
