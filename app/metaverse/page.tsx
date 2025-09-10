@@ -17,13 +17,18 @@ export default function MetaversePage() {
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    // Check WebXR support
-    if (typeof navigator !== "undefined" && "xr" in navigator && navigator.xr) {
-      // Check if navigator.xr is available and has the required methods
-      if (typeof navigator.xr === "object" && navigator.xr !== null) {
-        const xr = navigator.xr as any // Type assertion for WebXR API
-        setVrSupported("isSessionSupported" in xr && typeof xr.isSessionSupported === "function")
-        setArSupported("isSessionSupported" in xr && typeof xr.isSessionSupported === "function")
+    if (typeof navigator !== "undefined" && navigator.xr) {
+      try {
+        // Check if WebXR is available and has the required methods
+        const xr = navigator.xr
+        if (xr && typeof xr === "object" && typeof (xr as any).isSessionSupported === "function") {
+          setVrSupported(true)
+          setArSupported(true)
+        }
+      } catch (error) {
+        // WebXR not supported or error occurred
+        setVrSupported(false)
+        setArSupported(false)
       }
     }
   }, [])
