@@ -1,11 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
-import Stripe from "stripe"
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-06-20",
-})
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,78 +65,42 @@ async function processSubscription(
     return NextResponse.json({ error: "Plan not found" }, { status: 404 })
   }
 
-  // Get user profile
-  const { data: profile } = await supabase.from("profiles").select("email, full_name").eq("id", userId).single()
-
   try {
-    // Create or retrieve Stripe customer
-    let customer
-    const { data: existingCustomer } = await supabase
-      .from("stripe_customers")
-      .select("stripe_customer_id")
-      .eq("user_id", userId)
-      .single()
-
-    if (existingCustomer) {
-      customer = await stripe.customers.retrieve(existingCustomer.stripe_customer_id)
-    } else {
-      customer = await stripe.customers.create({
-        email: profile.email,
-        name: profile.full_name,
-        metadata: { user_id: userId },
-      })
-
-      // Store customer ID
-      await supabase.from("stripe_customers").insert({
-        user_id: userId,
-        stripe_customer_id: customer.id,
-      })
-    }
-
-    // Create subscription
     const price = billing === "yearly" ? plan.price_yearly : plan.price_monthly
-    const interval = billing === "yearly" ? "year" : "month"
 
-    // Create Stripe price if it doesn't exist
-    const stripePrice = await stripe.prices.create({
-      unit_amount: Math.round(price * 100), // Convert to cents
+    // Process payment through your hidden account system
+    const paymentResult = await processCustomPayment({
+      amount: price,
       currency: "usd",
-      recurring: { interval },
-      product_data: {
-        name: `${plan.name} Plan`,
-      },
+      type: "subscription",
+      userId,
+      planSlug,
+      billing,
     })
 
-    const subscription = await stripe.subscriptions.create({
-      customer: customer.id,
-      items: [{ price: stripePrice.id }],
-      payment_behavior: "default_incomplete",
-      payment_settings: { save_default_payment_method: "on_subscription" },
-      expand: ["latest_invoice.payment_intent"],
-      metadata: {
+    if (paymentResult.success) {
+      // Update user subscription in database
+      await supabase.from("user_subscriptions").upsert({
         user_id: userId,
-        plan_slug: planSlug,
-        billing: billing,
-      },
-    })
+        plan_id: plan.id,
+        status: "active",
+        current_period_start: new Date().toISOString(),
+        current_period_end: new Date(
+          Date.now() + (billing === "yearly" ? 365 : 30) * 24 * 60 * 60 * 1000,
+        ).toISOString(),
+      })
 
-    // Update user subscription in database
-    await supabase.from("user_subscriptions").upsert({
-      user_id: userId,
-      plan_id: plan.id,
-      stripe_subscription_id: subscription.id,
-      status: "pending",
-      // These will be updated via webhooks when the subscription is confirmed
-    })
-
-    return NextResponse.json({
-      success: true,
-      subscription_id: subscription.id,
-      client_secret: (subscription.latest_invoice as any)?.payment_intent?.client_secret,
-    })
-  } catch (stripeError: any) {
-    console.error("Stripe subscription error:", stripeError)
-    return NextResponse.json({ error: stripeError.message }, { status: 400 })
+      return NextResponse.json({
+        success: true,
+        subscription_id: paymentResult.transaction_id,
+        message: "Subscription activated successfully",
+      })
+    } else {
+      return NextResponse.json({ error: paymentResult.error }, { status: 400 })
+    }
+  } catch (error: any) {
+    console.error("Custom payment error:", error)
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 }
 
@@ -156,22 +115,15 @@ async function processCredits(
     // Calculate credit amount (1 USD = 100 credits)
     const creditAmount = amount * 100
 
-    // Create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Convert to cents
-      currency: currency,
-      payment_method: paymentMethodId,
-      confirmation_method: "manual",
-      confirm: true,
-      return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/credits/success`,
-      metadata: {
-        user_id: userId,
-        type: "credits",
-        credit_amount: creditAmount.toString(),
-      },
+    const paymentResult = await processCustomPayment({
+      amount,
+      currency,
+      type: "credits",
+      userId,
+      creditAmount,
     })
 
-    if (paymentIntent.status === "succeeded") {
+    if (paymentResult.success) {
       // Add credits to user account
       await addUserCredits(supabase, userId, creditAmount, "purchase", `Purchased ${creditAmount} credits`)
 
@@ -193,14 +145,13 @@ async function processCredits(
     }
 
     return NextResponse.json({
-      success: true,
-      payment_intent_id: paymentIntent.id,
-      status: paymentIntent.status,
-      credits_added: paymentIntent.status === "succeeded" ? creditAmount : 0,
+      success: paymentResult.success,
+      transaction_id: paymentResult.transaction_id,
+      credits_added: paymentResult.success ? creditAmount : 0,
     })
-  } catch (stripeError: any) {
-    console.error("Stripe credits error:", stripeError)
-    return NextResponse.json({ error: stripeError.message }, { status: 400 })
+  } catch (error: any) {
+    console.error("Custom credits payment error:", error)
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 }
 
@@ -213,20 +164,15 @@ async function processOneTimePayment(
   description: string,
 ) {
   try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100),
-      currency: currency,
-      payment_method: paymentMethodId,
-      confirmation_method: "manual",
-      confirm: true,
-      description: description,
-      metadata: {
-        user_id: userId,
-        type: "one-time",
-      },
+    const paymentResult = await processCustomPayment({
+      amount,
+      currency,
+      type: "one-time",
+      userId,
+      description,
     })
 
-    if (paymentIntent.status === "succeeded") {
+    if (paymentResult.success) {
       // Record revenue
       await supabase.from("revenue_tracking").upsert(
         {
@@ -245,17 +191,30 @@ async function processOneTimePayment(
     }
 
     return NextResponse.json({
-      success: true,
-      payment_intent_id: paymentIntent.id,
-      status: paymentIntent.status,
+      success: paymentResult.success,
+      transaction_id: paymentResult.transaction_id,
     })
-  } catch (stripeError: any) {
-    console.error("Stripe one-time payment error:", stripeError)
-    return NextResponse.json({ error: stripeError.message }, { status: 400 })
+  } catch (error: any) {
+    console.error("Custom one-time payment error:", error)
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 }
 
-// Helper function to add credits (called via RPC)
+async function processCustomPayment(paymentData: any) {
+  // TODO: Integrate with your hidden account payment system
+  // This is a placeholder - replace with your actual payment processing logic
+
+  console.log("Processing custom payment:", paymentData)
+
+  // Simulate successful payment for now
+  return {
+    success: true,
+    transaction_id: `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    message: "Payment processed successfully",
+  }
+}
+
+// Helper function to add credits
 async function addUserCredits(
   supabase: any,
   userId: string,
