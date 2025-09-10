@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, EyeOff, CreditCard, Wallet, Ban as Bank, Shield, AlertTriangle } from "lucide-react"
+import { Eye, EyeOff, Wallet, Ban as Bank, Shield, AlertTriangle } from "lucide-react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 interface PaymentSetting {
@@ -59,7 +59,6 @@ export default function PaymentSettingsPage() {
 
   const fetchRevenueData = async () => {
     try {
-      // Fetch revenue analytics
       const { data: revenue, error } = await supabase
         .from("revenue_tracking")
         .select("*")
@@ -67,7 +66,6 @@ export default function PaymentSettingsPage() {
 
       if (error) throw error
 
-      // Calculate totals
       const totalRevenue = revenue?.reduce((sum, r) => sum + Number.parseFloat(r.amount), 0) || 0
       const subscriptionRevenue =
         revenue
@@ -78,7 +76,6 @@ export default function PaymentSettingsPage() {
         0
       const transactionCount = revenue?.reduce((sum, r) => sum + r.transaction_count, 0) || 0
 
-      // Get active subscribers count
       const { count: activeSubscribers } = await supabase
         .from("user_subscriptions")
         .select("*", { count: "exact", head: true })
@@ -86,7 +83,7 @@ export default function PaymentSettingsPage() {
 
       setRevenueData({
         total_revenue: totalRevenue,
-        monthly_revenue: totalRevenue, // Last 30 days
+        monthly_revenue: totalRevenue,
         subscription_revenue: subscriptionRevenue,
         credits_revenue: creditsRevenue,
         transaction_count: transactionCount,
@@ -244,50 +241,12 @@ export default function PaymentSettingsPage() {
           </div>
         )}
 
-        <Tabs defaultValue="stripe" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="stripe">Stripe</TabsTrigger>
+        <Tabs defaultValue="crypto" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="crypto">Crypto Wallets</TabsTrigger>
             <TabsTrigger value="banking">Banking</TabsTrigger>
             <TabsTrigger value="automation">AI Automation</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="stripe" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Stripe Configuration
-                </CardTitle>
-                <CardDescription>Configure Stripe for credit card and bank transfer processing</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {renderSecretInput(
-                  "stripe_secret_key",
-                  "Stripe Secret Key",
-                  "sk_live_...",
-                  "Your Stripe secret key for processing payments",
-                )}
-
-                {renderSecretInput(
-                  "stripe_webhook_secret",
-                  "Stripe Webhook Secret",
-                  "whsec_...",
-                  "Webhook endpoint secret for secure event handling",
-                )}
-
-                <div className="space-y-2">
-                  <Label htmlFor="stripe_public_key">Stripe Publishable Key</Label>
-                  <Input
-                    id="stripe_public_key"
-                    placeholder="pk_live_..."
-                    defaultValue={getSetting("stripe_public_key")}
-                    onBlur={(e) => updateSetting("stripe_public_key", e.target.value, false)}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="crypto" className="space-y-6">
             <Card>
