@@ -14,7 +14,7 @@ export default function GovernancePage() {
 
   const handleTabChange = (tab: string) => {
     if (tab === "proposals" || tab === "treasury" || tab === "voting") {
-      setActiveTab(tab)
+      setActiveTab(tab as "proposals" | "treasury" | "voting")
     }
   }
 

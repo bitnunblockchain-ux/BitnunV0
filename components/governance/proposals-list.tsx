@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Vote, Clock, CheckCircle, XCircle, Users, MessageSquare } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+
+// import { createClient } from "@/lib/supabase/client"
 
 interface Proposal {
   id: string
@@ -27,35 +28,45 @@ export function ProposalsList() {
   const [proposals, setProposals] = useState<Proposal[]>([])
   const [filter, setFilter] = useState<"all" | "active" | "passed" | "rejected">("all")
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
 
   useEffect(() => {
     const fetchProposals = async () => {
       try {
-        const { data, error } = await supabase
-          .from("btn_governance_proposals")
-          .select("*")
-          .order("created_at", { ascending: false })
-
-        if (error) throw error
-
-        const transformedProposals: Proposal[] =
-          data?.map((proposal) => ({
-            id: proposal.id,
-            title: proposal.title,
-            description: proposal.description,
-            proposer: proposal.proposer_id,
-            status: proposal.status,
-            votesFor: proposal.votes_for || 0,
-            votesAgainst: proposal.votes_against || 0,
-            totalVotes: (proposal.votes_for || 0) + (proposal.votes_against || 0) + (proposal.votes_abstain || 0),
-            quorum: proposal.voting_power_required || 1000000,
-            endTime: proposal.voting_end,
-            category: proposal.proposal_type,
+        // Mock data for development
+        const mockProposals: Proposal[] = [
+          {
+            id: "1",
+            title: "Increase Mining Rewards for Green Energy Users",
+            description:
+              "Proposal to increase BTN mining rewards by 25% for users who can verify they use renewable energy sources for mining operations.",
+            proposer: "0x1234...5678",
+            status: "active",
+            votesFor: 2500000,
+            votesAgainst: 800000,
+            totalVotes: 3500000,
+            quorum: 5000000,
+            endTime: "2024-01-20T23:59:59Z",
+            category: "tokenomics",
             requiredMajority: 60,
-          })) || []
+          },
+          {
+            id: "2",
+            title: "Treasury Allocation for Carbon Offset Program",
+            description:
+              "Allocate 2M BTN from treasury to fund carbon offset initiatives and environmental partnerships.",
+            proposer: "0x9876...4321",
+            status: "passed",
+            votesFor: 4200000,
+            votesAgainst: 1100000,
+            totalVotes: 5500000,
+            quorum: 5000000,
+            endTime: "2024-01-15T23:59:59Z",
+            category: "treasury",
+            requiredMajority: 60,
+          },
+        ]
 
-        setProposals(transformedProposals)
+        setProposals(mockProposals)
       } catch (error) {
         console.error("Error fetching proposals:", error)
         setProposals([])
@@ -65,7 +76,7 @@ export function ProposalsList() {
     }
 
     fetchProposals()
-  }, [supabase])
+  }, [])
 
   const filteredProposals = proposals.filter((proposal) => filter === "all" || proposal.status === filter)
 
