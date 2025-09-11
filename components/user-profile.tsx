@@ -131,3 +131,5 @@ export function UserProfile() {
     </Card>
   )
 }
+
+export default UserProfile
