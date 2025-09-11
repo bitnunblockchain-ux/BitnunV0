@@ -154,3 +154,5 @@ export function RecentActivity() {
     </Card>
   )
 }
+
+export default RecentActivity
