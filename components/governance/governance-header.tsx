@@ -7,7 +7,7 @@ import { Vote, Eraser as Treasury, Users, Plus } from "lucide-react"
 
 interface GovernanceHeaderProps {
   activeTab: "proposals" | "treasury" | "voting"
-  onTabChange: (tab: "proposals" | "treasury" | "voting") => void
+  onTabChange: (tab: string) => void
   onCreateProposal: () => void
 }
 
