@@ -202,3 +202,5 @@ export function SocialFeed() {
     </div>
   )
 }
+
+export default SocialFeed
