@@ -171,7 +171,8 @@ export function Achievements() {
                         +{achievement.points} XP
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        Unlocked {new Date(achievement.unlockedAt).toLocaleDateString()}
+                        Unlocked{" "}
+                        {achievement.unlockedAt ? new Date(achievement.unlockedAt).toLocaleDateString() : "Recently"}
                       </span>
                     </div>
                   ) : (
