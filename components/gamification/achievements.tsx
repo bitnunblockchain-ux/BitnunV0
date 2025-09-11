@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Trophy, Leaf, Zap, Users, ShoppingBag } from "lucide-react"
 
+type Rarity = "common" | "uncommon" | "rare" | "epic" | "legendary"
+
 export function Achievements() {
   const [filter, setFilter] = useState("all")
 
@@ -16,7 +18,7 @@ export function Achievements() {
       description: "Complete your first mining session",
       icon: Zap,
       category: "mining",
-      rarity: "common",
+      rarity: "common" as Rarity,
       points: 50,
       unlocked: true,
       unlockedAt: "2024-01-15",
@@ -28,7 +30,7 @@ export function Achievements() {
       description: "Complete 50 eco-friendly actions",
       icon: Leaf,
       category: "eco",
-      rarity: "epic",
+      rarity: "epic" as Rarity,
       points: 500,
       unlocked: true,
       unlockedAt: "2024-01-20",
@@ -40,7 +42,7 @@ export function Achievements() {
       description: "Own 10 different eco-themed NFTs",
       icon: ShoppingBag,
       category: "nft",
-      rarity: "rare",
+      rarity: "rare" as Rarity,
       points: 200,
       unlocked: true,
       unlockedAt: "2024-01-18",
@@ -52,7 +54,7 @@ export function Achievements() {
       description: "Refer 5 new users to the platform",
       icon: Users,
       category: "social",
-      rarity: "rare",
+      rarity: "rare" as Rarity,
       points: 300,
       unlocked: false,
       progress: 3,
@@ -65,7 +67,7 @@ export function Achievements() {
       description: "Mine 1000 BTN tokens",
       icon: Zap,
       category: "mining",
-      rarity: "legendary",
+      rarity: "legendary" as Rarity,
       points: 1000,
       unlocked: false,
       progress: 647,
@@ -78,7 +80,7 @@ export function Achievements() {
       description: "Offset 100kg of CO2 through platform actions",
       icon: Leaf,
       category: "eco",
-      rarity: "epic",
+      rarity: "epic" as Rarity,
       points: 750,
       unlocked: false,
       progress: 67,
@@ -95,7 +97,7 @@ export function Achievements() {
     { id: "social", label: "Social", count: achievements.filter((a) => a.category === "social").length },
   ]
 
-  const rarityColors = {
+  const rarityColors: Record<Rarity, string> = {
     common: "bg-gray-500",
     uncommon: "bg-green-500",
     rare: "bg-blue-500",
