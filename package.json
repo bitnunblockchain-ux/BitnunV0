@@ -24,7 +24,6 @@
     "build": "next build",
     "clean": "rm -rf .next out node_modules/.cache",
     "dev": "next dev",
-    "postinstall": "prisma generate || true",
     "lint": "next lint --fix",
     "lint:check": "next lint",
     "start": "next start",
@@ -118,6 +117,7 @@
     "zod": "3.25.67"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^18",
